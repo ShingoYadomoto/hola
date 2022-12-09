@@ -26,6 +26,19 @@ const (
 	純全帯幺九
 	二盃口
 	清一色
+	国士無双
+	国士無双十三面
+	四暗刻
+	四暗刻単騎
+	大三元
+	小四喜
+	大四喜
+	字一色
+	緑一色
+	清老頭
+	四槓子
+	九蓮宝燈
+	純正九蓮宝燈
 )
 
 type Fanshu int
@@ -42,6 +55,10 @@ func (ht HandType) Fanshu(isMenzen bool) Fanshu {
 		fanshu = 3
 	case 清一色:
 		fanshu = 6
+	case 国士無双, 四暗刻, 大三元, 小四喜, 字一色, 緑一色, 清老頭, 四槓子, 九蓮宝燈:
+		fanshu = 13
+	case 大四喜, 国士無双十三面, 四暗刻単騎, 純正九蓮宝燈:
+		fanshu = 26
 	}
 
 	if isMenzen {
