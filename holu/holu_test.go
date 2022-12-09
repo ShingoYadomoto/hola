@@ -1,4 +1,4 @@
-package main
+package holu
 
 import (
 	"reflect"
@@ -7,20 +7,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHolaGuoshi(t *testing.T) {
+func TestHoluGuoshi(t *testing.T) {
 	type args struct {
-		hand    Hand
-		rongpai *pai
+		holuPattern HoluPattern
+		rongpai     *pai
 	}
 	tests := []struct {
 		name string
 		args args
-		want *KokushiHolaHand
+		want *KokushiHoluPattern
 	}{
 		{
 			name: "tsumo",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						九萬: 1,
@@ -39,16 +39,16 @@ func TestHolaGuoshi(t *testing.T) {
 					TsumoPai: &發,
 				},
 			},
-			want: &KokushiHolaHand{
+			want: &KokushiHoluPattern{
 				Head:    中,
-				HolaPai: 發,
+				HoluPai: 發,
 			},
 		},
 
 		{
 			name: "tsumo. 13面",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						九萬: 1,
@@ -67,16 +67,16 @@ func TestHolaGuoshi(t *testing.T) {
 					TsumoPai: &中,
 				},
 			},
-			want: &KokushiHolaHand{
+			want: &KokushiHoluPattern{
 				Head:    中,
-				HolaPai: 中,
+				HoluPai: 中,
 			},
 		},
 
 		{
 			name: "rong",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						九萬: 1,
@@ -95,16 +95,16 @@ func TestHolaGuoshi(t *testing.T) {
 				},
 				rongpai: &發,
 			},
-			want: &KokushiHolaHand{
+			want: &KokushiHoluPattern{
 				Head:    中,
-				HolaPai: 發,
+				HoluPai: 發,
 			},
 		},
 
 		{
 			name: "rong. 13面",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						九萬: 1,
@@ -123,16 +123,16 @@ func TestHolaGuoshi(t *testing.T) {
 				},
 				rongpai: &中,
 			},
-			want: &KokushiHolaHand{
+			want: &KokushiHoluPattern{
 				Head:    中,
-				HolaPai: 中,
+				HoluPai: 中,
 			},
 		},
 
 		{
 			name: "not kokushi",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 3,
 						九萬: 3,
@@ -148,27 +148,27 @@ func TestHolaGuoshi(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := HolaGuoshi(tt.args.hand, tt.args.rongpai); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HolaGuoshi() = %v, want %v", got, tt.want)
+			if got := HoluGuoshi(tt.args.holuPattern, tt.args.rongpai); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HoluGuoshi() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestHolaGiduizi(t *testing.T) {
+func TestHoluGiduizi(t *testing.T) {
 	type args struct {
-		hand    Hand
-		rongpai *pai
+		holuPattern HoluPattern
+		rongpai     *pai
 	}
 	tests := []struct {
 		name string
 		args args
-		want *TitoitsuHolaHand
+		want *TitoitsuHoluPattern
 	}{
 		{
 			name: "tsumo",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 2,
 						九萬: 2,
@@ -181,16 +181,16 @@ func TestHolaGiduizi(t *testing.T) {
 					TsumoPai: &發,
 				},
 			},
-			want: &TitoitsuHolaHand{
-				Hand:    []pai{一萬, 九萬, 一筒, 九筒, 一索, 九索, 東},
-				HolaPai: 發,
+			want: &TitoitsuHoluPattern{
+				Menzen:  []pai{一萬, 九萬, 一筒, 九筒, 一索, 九索, 東},
+				HoluPai: 發,
 			},
 		},
 
 		{
 			name: "rong",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 2,
 						九萬: 2,
@@ -203,16 +203,16 @@ func TestHolaGiduizi(t *testing.T) {
 				},
 				rongpai: &發,
 			},
-			want: &TitoitsuHolaHand{
-				Hand:    []pai{一萬, 九萬, 一筒, 九筒, 一索, 九索, 東},
-				HolaPai: 發,
+			want: &TitoitsuHoluPattern{
+				Menzen:  []pai{一萬, 九萬, 一筒, 九筒, 一索, 九索, 東},
+				HoluPai: 發,
 			},
 		},
 
 		{
 			name: "not Titoitsu",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						九萬: 1,
@@ -236,10 +236,10 @@ func TestHolaGiduizi(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := HolaGiduizi(tt.args.hand, tt.args.rongpai)
+			got := HoluGiduizi(tt.args.holuPattern, tt.args.rongpai)
 			if tt.want != nil {
-				assert.ElementsMatch(t, got.Hand, tt.want.Hand)
-				assert.Equal(t, got.HolaPai, tt.want.HolaPai)
+				assert.ElementsMatch(t, got.Menzen, tt.want.Menzen)
+				assert.Equal(t, got.HoluPai, tt.want.HoluPai)
 			} else {
 				assert.Equal(t, got, tt.want)
 			}
@@ -247,7 +247,7 @@ func TestHolaGiduizi(t *testing.T) {
 	}
 }
 
-func TestHolaMianzi(t *testing.T) {
+func TestHoluMianzi(t *testing.T) {
 	type args struct {
 		pais     map[pai]int
 		checkPai pai
@@ -339,7 +339,7 @@ func TestHolaMianzi(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := HolaMianzi(tt.args.pais, tt.args.checkPai)
+			got := HoluMianzi(tt.args.pais, tt.args.checkPai)
 			for i, want := range tt.want {
 				assert.ElementsMatch(t, got[i], want)
 			}
@@ -349,7 +349,7 @@ func TestHolaMianzi(t *testing.T) {
 
 func TestHuleMianziAll(t *testing.T) {
 	type args struct {
-		hand Hand
+		holuPattern HoluPattern
 	}
 	tests := []struct {
 		name string
@@ -359,7 +359,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 3,
 						二萬: 3,
@@ -389,7 +389,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 1,
 						二萬: 3,
@@ -406,7 +406,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 3,
 						二萬: 1,
@@ -423,7 +423,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 3,
 						二萬: 3,
@@ -440,7 +440,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 2,
 						二萬: 2,
@@ -458,7 +458,7 @@ func TestHuleMianziAll(t *testing.T) {
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 2,
 						二萬: 2,
@@ -483,25 +483,25 @@ func TestHuleMianziAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, HuleMianziAll(tt.args.hand), "HuleMianziAll(%v)", tt.args.hand)
+			assert.Equalf(t, tt.want, HuleMianziAll(tt.args.holuPattern), "HuleMianziAll(%v)", tt.args.holuPattern)
 		})
 	}
 }
 
-func TestHolaYiban(t *testing.T) {
+func TestHoluYiban(t *testing.T) {
 	type args struct {
-		hand    Hand
-		rongpai *pai
+		holuPattern HoluPattern
+		rongpai     *pai
 	}
 	tests := []struct {
 		name string
 		args args
-		want []StandardHolaHand
+		want []StandardHoluPattern
 	}{
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 3,
 						二萬: 3,
@@ -513,7 +513,7 @@ func TestHolaYiban(t *testing.T) {
 					TsumoPai: &九索,
 				},
 			},
-			want: []StandardHolaHand{
+			want: []StandardHoluPattern{
 				{
 					Mentsu: []mentsu{
 						{pais: []pai{一萬, 二萬, 三萬}},
@@ -522,7 +522,7 @@ func TestHolaYiban(t *testing.T) {
 						{pais: []pai{七索, 八索, 九索}},
 					},
 					Head:    九索,
-					HolaPai: 九索,
+					HoluPai: 九索,
 				},
 				{
 					Mentsu: []mentsu{
@@ -532,14 +532,14 @@ func TestHolaYiban(t *testing.T) {
 						{pais: []pai{七索, 八索, 九索}},
 					},
 					Head:    九索,
-					HolaPai: 九索,
+					HoluPai: 九索,
 				},
 			},
 		},
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						一萬: 2,
 						二萬: 2,
@@ -552,7 +552,7 @@ func TestHolaYiban(t *testing.T) {
 					TsumoPai: &九索,
 				},
 			},
-			want: []StandardHolaHand{
+			want: []StandardHoluPattern{
 				{
 					Mentsu: []mentsu{
 						{pais: []pai{一萬, 二萬, 三萬}},
@@ -561,14 +561,14 @@ func TestHolaYiban(t *testing.T) {
 						{pais: []pai{白, 白, 白}},
 					},
 					Head:    九索,
-					HolaPai: 九索,
+					HoluPai: 九索,
 				},
 			},
 		},
 		{
 			name: "",
 			args: args{
-				hand: Hand{
+				holuPattern: HoluPattern{
 					Menzen: map[pai]int{
 						二萬: 2,
 						三萬: 2,
@@ -584,7 +584,7 @@ func TestHolaYiban(t *testing.T) {
 					TsumoPai: &三萬,
 				},
 			},
-			want: []StandardHolaHand{
+			want: []StandardHoluPattern{
 				{
 					Mentsu: []mentsu{
 						{pais: []pai{三萬, 四萬, 五萬}},
@@ -593,7 +593,7 @@ func TestHolaYiban(t *testing.T) {
 						{pais: []pai{二索, 三索, 四索}},
 					},
 					Head:    二萬,
-					HolaPai: 三萬,
+					HoluPai: 三萬,
 				},
 				{
 					Mentsu: []mentsu{
@@ -603,15 +603,15 @@ func TestHolaYiban(t *testing.T) {
 						{pais: []pai{二索, 三索, 四索}},
 					},
 					Head:    五萬,
-					HolaPai: 三萬,
+					HoluPai: 三萬,
 				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := HolaYiban(tt.args.hand, tt.args.rongpai)
-			assert.Equalf(t, tt.want, got, "HolaYiban(%v, %v)", tt.args.hand, tt.args.rongpai)
+			got := HoluYiban(tt.args.holuPattern, tt.args.rongpai)
+			assert.Equalf(t, tt.want, got, "HoluYiban(%v, %v)", tt.args.holuPattern, tt.args.rongpai)
 		})
 	}
 }

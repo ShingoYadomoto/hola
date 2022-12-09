@@ -1,4 +1,4 @@
-package main
+package holu
 
 type Player int
 

@@ -1,18 +1,18 @@
-package main
+package holu
 
 import (
 	"sort"
 )
 
-// HolaMianzi() は各色の中で面子を探す処理(パターン2はここで処理)。
-func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
+// HoluMianzi は各色の中で面子を探す処理
+func HoluMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 	if checkPai.Index == 10 {
 		return [][]mentsu{{}}
 	}
 
 	if pais[checkPai] == 0 {
 		checkPai.Index++
-		return HolaMianzi(pais, checkPai)
+		return HoluMianzi(pais, checkPai)
 	}
 
 	var (
@@ -24,7 +24,7 @@ func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 		pais[checkPai]--
 		pais[nextPai]--
 		pais[nextNextPai]--
-		shuntsu = HolaMianzi(pais, checkPai)
+		shuntsu = HoluMianzi(pais, checkPai)
 		pais[checkPai]++
 		pais[nextPai]++
 		pais[nextNextPai]++
@@ -38,7 +38,7 @@ func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 	)
 	if pais[checkPai] >= 3 {
 		pais[checkPai] -= 3
-		kezi = HolaMianzi(pais, checkPai)
+		kezi = HoluMianzi(pais, checkPai)
 		pais[checkPai] += 3
 		for i, _ := range kezi {
 			kezi[i] = append(kezi[i], mentsu{pais: []pai{checkPai, checkPai, checkPai}})
@@ -49,13 +49,13 @@ func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 	return ret
 }
 
-// HuleMianziAll() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
-func HuleMianziAll(hand Hand) [][]mentsu {
+// HuleMianziAll は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
+func HuleMianziAll(HoluPattern HoluPattern) [][]mentsu {
 	mianzi := [][]mentsu{{}}
 
 	for _, t := range []paiType{paiTypeManzu, paiTypePinzu, paiTypeSozu} {
 		pais := map[pai]int{}
-		for p, count := range hand.Menzen {
+		for p, count := range HoluPattern.Menzen {
 			if p.TypeIs(t) {
 				pais[p] = count
 			}
@@ -63,7 +63,7 @@ func HuleMianziAll(hand Hand) [][]mentsu {
 
 		newMianzi := [][]mentsu{}
 		unit := pai{Type: t, Index: 1}
-		subMianzi := HolaMianzi(pais, unit)
+		subMianzi := HoluMianzi(pais, unit)
 
 		for _, m := range mianzi {
 			for _, n := range subMianzi {
@@ -74,7 +74,7 @@ func HuleMianziAll(hand Hand) [][]mentsu {
 	}
 
 	subMianziZ := []mentsu{}
-	for p, count := range hand.Menzen {
+	for p, count := range HoluPattern.Menzen {
 		if p.TypeIs(paiTypeZi) {
 			switch count {
 			case 0:
@@ -94,22 +94,22 @@ func HuleMianziAll(hand Hand) [][]mentsu {
 	return mianzi
 }
 
-// HolaYiban は4面子1雀頭形の処理。
-// まず可能性のある雀頭を抜き出し(パターン3の処理)、hule_mianzi_all() に処理を任せた後、add_hulepai() を呼出して和了牌の位置を決めている。
-func HolaYiban(hand Hand, rongpai *pai) []StandardHolaHand {
-	var holaPai pai
+// HoluYiban は4面子1雀頭形の処理。
+// まず可能性のある雀頭を抜き出し、hule_mianzi_all() に処理を任せた後、add_hulepai() を呼出して和了牌の位置を決めている。
+func HoluYiban(HoluPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
+	var HoluPai pai
 	if rongpai == nil {
-		holaPai = *hand.TsumoPai
+		HoluPai = *HoluPattern.TsumoPai
 	} else {
-		holaPai = *rongpai
+		HoluPai = *rongpai
 	}
 
 	var (
-		huleMianzi = []StandardHolaHand{}
-		paiList    = make([]pai, len(hand.Menzen))
+		huleMianzi = []StandardHoluPattern{}
+		paiList    = make([]pai, len(HoluPattern.Menzen))
 	)
 	i := 0
-	for pai, _ := range hand.Menzen {
+	for pai, _ := range HoluPattern.Menzen {
 		paiList[i] = pai
 		i++
 	}
@@ -122,72 +122,72 @@ func HolaYiban(hand Hand, rongpai *pai) []StandardHolaHand {
 		return paiList[i].Type < paiList[j].Type
 	})
 	for _, pai := range paiList {
-		count := hand.Menzen[pai]
+		count := HoluPattern.Menzen[pai]
 		if count < 2 {
 			continue
 		}
 
-		holahand := StandardHolaHand{
+		HoluHoluPattern := StandardHoluPattern{
 			Head:    pai,
-			HolaPai: holaPai,
+			HoluPai: HoluPai,
 		}
-		hand.Menzen[pai] -= 2
-		all := HuleMianziAll(hand)
+		HoluPattern.Menzen[pai] -= 2
+		all := HuleMianziAll(HoluPattern)
 		for _, mianzi := range all {
-			holahand.Mentsu = mianzi
-			huleMianzi = append(huleMianzi, holahand)
+			HoluHoluPattern.Mentsu = mianzi
+			huleMianzi = append(huleMianzi, HoluHoluPattern)
 		}
-		hand.Menzen[pai] += 2
+		HoluPattern.Menzen[pai] += 2
 	}
 
 	return huleMianzi
 }
 
-// HolaGiduizi は七対子形の処理。
-func HolaGiduizi(hand Hand, rongpai *pai) *TitoitsuHolaHand {
-	if len(hand.FulouPai) > 0 {
+// HoluGiduizi は七対子形の処理。
+func HoluGiduizi(HoluPattern HoluPattern, rongpai *pai) *TitoitsuHoluPattern {
+	if len(HoluPattern.FulouPai) > 0 {
 		return nil
 	}
 
-	var holaPai pai
+	var HoluPai pai
 	if rongpai == nil {
-		holaPai = *hand.TsumoPai
+		HoluPai = *HoluPattern.TsumoPai
 	} else {
-		holaPai = *rongpai
+		HoluPai = *rongpai
 	}
 
-	ret := &TitoitsuHolaHand{
-		Hand:    make([]pai, 7),
-		HolaPai: holaPai,
+	ret := &TitoitsuHoluPattern{
+		Menzen:  make([]pai, 7),
+		HoluPai: HoluPai,
 	}
 	i := 0
-	for pai, count := range hand.Menzen {
+	for pai, count := range HoluPattern.Menzen {
 		if count != 2 {
 			return nil
 		}
 
-		ret.Hand[i] = pai
+		ret.Menzen[i] = pai
 		i++
 	}
 
 	return ret
 }
 
-// HolaGuoshi は国士無双形の処理。
-func HolaGuoshi(hand Hand, rongpai *pai) *KokushiHolaHand {
-	if len(hand.FulouPai) > 0 {
+// HoluGuoshi は国士無双形の処理。
+func HoluGuoshi(HoluPattern HoluPattern, rongpai *pai) *KokushiHoluPattern {
+	if len(HoluPattern.FulouPai) > 0 {
 		return nil
 	}
 
-	var holaPai pai
+	var HoluPai pai
 	if rongpai == nil {
-		holaPai = *hand.TsumoPai
+		HoluPai = *HoluPattern.TsumoPai
 	} else {
-		holaPai = *rongpai
+		HoluPai = *rongpai
 	}
 
-	ret := &KokushiHolaHand{
-		HolaPai: holaPai,
+	ret := &KokushiHoluPattern{
+		HoluPai: HoluPai,
 	}
 
 	required := map[pai]struct{}{
@@ -205,7 +205,7 @@ func HolaGuoshi(hand Hand, rongpai *pai) *KokushiHolaHand {
 		發:  {},
 		中:  {},
 	}
-	for pai, count := range hand.Menzen {
+	for pai, count := range HoluPattern.Menzen {
 		if _, ok := required[pai]; !ok {
 			return nil
 		}
@@ -231,21 +231,23 @@ func HolaGuoshi(hand Hand, rongpai *pai) *KokushiHolaHand {
 	return ret
 }
 
-/*
-// hola() はメイン処理で、HolaYiban()、HolaGiduizi()、HolaGuoshi() を呼出してその結果を1つにまとめている(パターン1の処理)。
-func hola(hand Hand, rongpai *pai) []HolaHand {
+// Holu はメイン処理で、HoluYiban()、HoluGiduizi()、HoluGuoshi() を呼出してその結果を1つにまとめている
+func Holu(HoluPattern HoluPattern, rongpai *pai) FullHoluPattern {
 	if rongpai != nil {
-		hand.Tsumo(*rongpai)
+		HoluPattern.Tsumo(*rongpai)
 	}
 
-	return append(HolaYiban(hand, rongpai), HolaGiduizi(hand, rongpai), HolaGuoshi(hand, rongpai))
+	return FullHoluPattern{
+		Standard: HoluYiban(HoluPattern, rongpai),
+		Titoitsu: HoluGiduizi(HoluPattern, rongpai),
+		Kokushi:  HoluGuoshi(HoluPattern, rongpai),
+	}
 }
 
-func Tsumo(hand Hand) []HolaHand {
-	return hola(hand, nil)
+func Tsumo(HoluPattern HoluPattern) FullHoluPattern {
+	return Holu(HoluPattern, nil)
 }
 
-func Rong(hand Hand, rongpai *pai) []HolaHand {
-	return hola(hand, rongpai)
+func Rong(HoluPattern HoluPattern, rongpai *pai) FullHoluPattern {
+	return Holu(HoluPattern, rongpai)
 }
-*/
