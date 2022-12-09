@@ -1,4 +1,4 @@
-package holu
+package hola_go
 
 import (
 	"sort"
@@ -252,7 +252,7 @@ func Holu(HoluPattern HoluPattern, rongpai *pai) FullHoluPattern {
 		Standard: standard,
 		Titoitsu: titoitsu,
 		Kokushi:  HoluGuoshi(HoluPattern, rongpai),
-		isTsumo:  rongpai == nil,
+		IsTsumo:  rongpai == nil,
 	}
 }
 

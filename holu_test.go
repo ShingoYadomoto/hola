@@ -1,4 +1,4 @@
-package holu
+package hola_go
 
 import (
 	"reflect"

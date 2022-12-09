@@ -1,4 +1,4 @@
-package hand
+package hola_go
 
 type HandType int
 
@@ -6,11 +6,11 @@ type AllHands []HandType
 
 const (
 	門前清自摸和 HandType = iota + 1
-	場風
-	自風
-	白
-	發
-	中
+	翻牌場風
+	翻牌自風
+	翻牌白
+	翻牌發
+	翻牌中
 	平和
 	断幺九
 	一盃口
@@ -49,7 +49,7 @@ func (ht HandType) Fanshu(isMenzen bool) Fanshu {
 	var fanshu Fanshu
 
 	switch ht {
-	case 門前清自摸和, 場風, 自風, 白, 發, 中, 平和, 断幺九, 一盃口:
+	case 門前清自摸和, 翻牌場風, 翻牌自風, 翻牌白, 翻牌發, 翻牌中, 平和, 断幺九, 一盃口:
 		fanshu = 1
 	case 三色同順, 一気通貫, 混全帯幺九, 七対子, 対々和, 三暗刻, 三槓子, 三色同刻, 混老頭, 小三元, 混一色:
 		fanshu = 2
@@ -78,21 +78,3 @@ func (ht HandType) Fanshu(isMenzen bool) Fanshu {
 
 	return fanshu
 }
-
-type zhuangfeng int
-
-const (
-	東家 zhuangfeng = iota + 1
-	西家
-	南家
-	北家
-)
-
-type zifeng int
-
-const (
-	東場 zifeng = iota + 1
-	西場
-	南場
-	北場
-)
