@@ -33,6 +33,10 @@ func (p pai) IsZero() bool {
 	return p.Type == 0 || p.Index == 0
 }
 
+func (p pai) TypeIs(t paiType) bool {
+	return p.Type == t
+}
+
 var (
 	一萬 = pai{Type: paiTypeManzu, Index: paiIndex1}
 	二萬 = pai{Type: paiTypeManzu, Index: paiIndex2}

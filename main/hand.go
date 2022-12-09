@@ -38,7 +38,7 @@ func (s Hand) Tsumo(p pai) {
 }
 
 type Fulou struct {
-	paiList       [4]pai
+	pais          []pai
 	fulouPaiIndex int
 	fulouFrom     Player
 }

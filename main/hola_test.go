@@ -331,3 +331,144 @@ func TestHolaMianzi(t *testing.T) {
 		})
 	}
 }
+
+func TestHuleMianziAll(t *testing.T) {
+	type args struct {
+		hand Hand
+	}
+	tests := []struct {
+		name string
+		args args
+		want [][]mentsu
+	}{
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 3,
+						二萬: 3,
+						三萬: 3,
+						七索: 1,
+						八索: 1,
+						九索: 1,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{
+				{
+					{pais: []pai{一萬, 二萬, 三萬}},
+					{pais: []pai{一萬, 二萬, 三萬}},
+					{pais: []pai{一萬, 二萬, 三萬}},
+					{pais: []pai{七索, 八索, 九索}},
+				},
+				{
+					{pais: []pai{三萬, 三萬, 三萬}},
+					{pais: []pai{二萬, 二萬, 二萬}},
+					{pais: []pai{一萬, 一萬, 一萬}},
+					{pais: []pai{七索, 八索, 九索}},
+				},
+			},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 1,
+						二萬: 3,
+						三萬: 3,
+						七索: 1,
+						八索: 1,
+						九索: 3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 3,
+						二萬: 1,
+						三萬: 3,
+						七索: 1,
+						八索: 1,
+						九索: 3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 3,
+						二萬: 3,
+						三萬: 1,
+						七索: 1,
+						八索: 1,
+						九索: 3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 2,
+						二萬: 2,
+						三萬: 3,
+						七索: 1,
+						八索: 1,
+						九索: 1,
+						白:  2,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 2,
+						二萬: 2,
+						三萬: 2,
+						七索: 1,
+						八索: 1,
+						九索: 1,
+						白:  3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: [][]mentsu{
+				{
+					{pais: []pai{一萬, 二萬, 三萬}},
+					{pais: []pai{一萬, 二萬, 三萬}},
+					{pais: []pai{七索, 八索, 九索}},
+					{pais: []pai{白, 白, 白}},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, HuleMianziAll(tt.args.hand), "HuleMianziAll(%v)", tt.args.hand)
+		})
+	}
+}

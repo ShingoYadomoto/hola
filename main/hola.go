@@ -45,7 +45,57 @@ func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 	return ret
 }
 
+// HuleMianziAll() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
+func HuleMianziAll(hand Hand) [][]mentsu {
+	mianzi := [][]mentsu{}
+
+	for _, t := range []paiType{paiTypeManzu, paiTypePinzu, paiTypeSozu} {
+		pais := map[pai]int{}
+		for p, count := range hand.Menzen {
+			if p.TypeIs(t) {
+				pais[p] = count
+			}
+		}
+
+		newMianzi := [][]mentsu{}
+		unit := pai{Type: t, Index: 1}
+		subMianzi := HolaMianzi(pais, unit)
+		if len(mianzi) == 0 {
+			mianzi = subMianzi
+			continue
+		}
+
+		for _, m := range mianzi {
+			for _, n := range subMianzi {
+				newMianzi = append(newMianzi, append(m, n...))
+			}
+		}
+		mianzi = newMianzi
+	}
+
+	subMianziZ := []mentsu{}
+	for p, count := range hand.Menzen {
+		if p.TypeIs(paiTypeZi) {
+			switch count {
+			case 0:
+				continue
+			case 3:
+				subMianziZ = append(subMianziZ, mentsu{pais: []pai{p, p, p}})
+			default:
+				return [][]mentsu{}
+			}
+		}
+	}
+
+	for i, m := range mianzi {
+		mianzi[i] = append(m, subMianziZ...)
+	}
+
+	return mianzi
+}
+
 /*
+// hule_mianzi_all() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
 function hule_mianzi_all(shoupai) {
 
     var mianzi = [[]];
@@ -76,6 +126,7 @@ function hule_mianzi_all(shoupai) {
     return mianzi;
 }
 
+// add_hulepai() は和了牌を可能性のあるすべての面子に入れる処理(パターン4はここで処理)。
 function add_hulepai(mianzi, hulepai) {
 
     var regexp   = new RegExp('^(' + hulepai[0] + '.*' + hulepai[1] +')');
@@ -123,9 +174,6 @@ function hule_yiban(shoupai, rongpai) {
 
 // HolaYiban は4面子1雀頭形の処理。
 // まず可能性のある雀頭を抜き出し(パターン3の処理)、hule_mianzi_all() に処理を任せた後、add_hulepai() を呼出して和了牌の位置を決めている。
-// hule_mianzi() は各色の中で面子を探す処理(パターン2はここで処理)。
-// hule_mianzi_all() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
-// add_hulepai() は和了牌を可能性のあるすべての面子に入れる処理(パターン4はここで処理)。
 func HolaYiban(hand Hand, rongpai *pai) []StandardHolaHand { return nil }
 
 // HolaGiduizi は七対子形の処理。
