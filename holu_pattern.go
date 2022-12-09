@@ -24,7 +24,7 @@ func (shp StandardHoluPattern) IsMenzen() bool {
 	return len(shp.FulouMentsu) == 0
 }
 
-func (shp StandardHoluPattern) hasKotsu(p pai) bool {
+func (shp StandardHoluPattern) HasKotsu(p pai) bool {
 	for _, mentsu := range append(shp.Mentsu, shp.FulouMentsu...) {
 		isKotsu := true
 		for _, pai := range mentsu.pais {
@@ -43,20 +43,20 @@ func (shp StandardHoluPattern) hasKotsu(p pai) bool {
 
 func (shp StandardHoluPattern) IsZhuangfengpai(zhuangfeng Zhuangfeng) bool {
 	var (
-		fanpaimap = map[Zhuangfeng]pai{東家: 東, 西家: 西, 南家: 南, 北家: 北}
+		fanpaimap = map[Zhuangfeng]pai{東場: 東, 西場: 西, 南場: 南, 北場: 北}
 		fanpai    = fanpaimap[zhuangfeng]
 	)
 
-	return shp.hasKotsu(fanpai)
+	return shp.HasKotsu(fanpai)
 }
 
 func (shp StandardHoluPattern) IsZifeng(zifeng Zifeng) bool {
 	var (
-		fanpaimap = map[Zifeng]pai{東場: 東, 西場: 西, 南場: 南, 北場: 北}
+		fanpaimap = map[Zifeng]pai{東家: 東, 西家: 西, 南家: 南, 北家: 北}
 		fanpai    = fanpaimap[zifeng]
 	)
 
-	return shp.hasKotsu(fanpai)
+	return shp.HasKotsu(fanpai)
 }
 
 // 七対子形の和了型
