@@ -96,20 +96,25 @@ func HuleMianziAll(HoluPattern HoluPattern) [][]mentsu {
 
 // HoluYiban は4面子1雀頭形の処理。
 // まず可能性のある雀頭を抜き出し、hule_mianzi_all() に処理を任せた後、add_hulepai() を呼出して和了牌の位置を決めている。
-func HoluYiban(HoluPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
+func HoluYiban(holuPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
 	var HoluPai pai
 	if rongpai == nil {
-		HoluPai = *HoluPattern.TsumoPai
+		HoluPai = *holuPattern.TsumoPai
 	} else {
 		HoluPai = *rongpai
 	}
 
+	fulouMentsu := make([]mentsu, len(holuPattern.FulouPai))
+	for i, Fulou := range holuPattern.FulouPai {
+		fulouMentsu[i] = mentsu{pais: Fulou.pais}
+	}
+
 	var (
 		huleMianzi = []StandardHoluPattern{}
-		paiList    = make([]pai, len(HoluPattern.Menzen))
+		paiList    = make([]pai, len(holuPattern.Menzen))
 	)
 	i := 0
-	for pai, _ := range HoluPattern.Menzen {
+	for pai, _ := range holuPattern.Menzen {
 		paiList[i] = pai
 		i++
 	}
@@ -122,22 +127,23 @@ func HoluYiban(HoluPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
 		return paiList[i].Type < paiList[j].Type
 	})
 	for _, pai := range paiList {
-		count := HoluPattern.Menzen[pai]
+		count := holuPattern.Menzen[pai]
 		if count < 2 {
 			continue
 		}
 
 		HoluHoluPattern := StandardHoluPattern{
-			Head:    pai,
-			HoluPai: HoluPai,
+			Head:        pai,
+			HoluPai:     HoluPai,
+			FulouMentsu: fulouMentsu,
 		}
-		HoluPattern.Menzen[pai] -= 2
-		all := HuleMianziAll(HoluPattern)
+		holuPattern.Menzen[pai] -= 2
+		all := HuleMianziAll(holuPattern)
 		for _, mianzi := range all {
 			HoluHoluPattern.Mentsu = mianzi
 			huleMianzi = append(huleMianzi, HoluHoluPattern)
 		}
-		HoluPattern.Menzen[pai] += 2
+		holuPattern.Menzen[pai] += 2
 	}
 
 	return huleMianzi
@@ -237,10 +243,16 @@ func Holu(HoluPattern HoluPattern, rongpai *pai) FullHoluPattern {
 		HoluPattern.Tsumo(*rongpai)
 	}
 
+	var (
+		standard = HoluYiban(HoluPattern, rongpai)
+		titoitsu = HoluGiduizi(HoluPattern, rongpai)
+	)
+
 	return FullHoluPattern{
-		Standard: HoluYiban(HoluPattern, rongpai),
-		Titoitsu: HoluGiduizi(HoluPattern, rongpai),
+		Standard: standard,
+		Titoitsu: titoitsu,
 		Kokushi:  HoluGuoshi(HoluPattern, rongpai),
+		isTsumo:  rongpai == nil,
 	}
 }
 
