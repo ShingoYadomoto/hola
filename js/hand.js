@@ -226,7 +226,87 @@ function hupai(mianzi, zhuangfeng, zifeng) {
         return [];
     }
 
-    return    [].concat(menqianqing())
+    function guoshiwushuang() {
+        if (mianzi.length != 13)            return [];
+        if (mianzi.filter(function(m){return m.match(danqi)}).length == 0)
+            return [{ name: '国士無双', fanshu: '*' }];
+        else    return [{ name: '国士無双十三面', fanshu: '**' }];
+    }
+    function sianke() {
+        if (mianzi.length != 5)             return [];
+        if (mianzi.filter(function(m){return m.match(ankezi)}).length != 4)
+            return [];
+        if (mianzi.filter(function(m){return m.match(danqi)}).length == 0)
+            return [{ name: '四暗刻', fanshu: '*' }];
+        else    return [{ name: '四暗刻単騎', fanshu: '**' }];
+    }
+    function dasanyuan() {
+        if (mianzi.length != 5)             return [];
+        if (mianzi.filter(function(m){return m.match(sanyuanpai)}).length != 3)
+            return [];
+        if (mianzi[0].match(sanyuanpai))    return [];
+        return [{ name: '大三元', fanshu: '*' }];
+    }
+    function sixihu() {
+        if (mianzi.length != 5)             return [];
+        if (mianzi.filter(function(m){return m.match(fengpai)}).length != 4)
+            return [];
+        if (mianzi[0].match(fengpai))
+            return [{ name: '小四喜', fanshu: '*' }];
+        else    return [{ name: '大四喜', fanshu: '**' }];
+    }
+    function ziyise() {
+        if (mianzi.filter(function(m){return ! m.match(zipai)}).length > 0)
+            return [];
+        if (mianzi.length != 7)
+            return [{ name: '字一色', fanshu: '*' }];
+        else    return [{ name: '字一色七対子', fanshu: '**' }];
+    }
+    function lvyise() {
+        if (mianzi.filter(function(m){return m.match(/^[mp]/)}).length > 0)
+            return [];
+        if (mianzi.filter(function(m){return m.match(/^z[^6]/)}).length > 0)
+            return [];
+        if (mianzi.filter(function(m){return m.match(/^s.*[1579]/)}).length > 0)
+            return [];
+        return [{ name: '緑一色', fanshu: '*' }];
+    }
+    function qinglaotou() {
+        if (mianzi.length != 5)             return [];
+        if (mianzi.filter(function(m){return ! m.match(yaojiu)}).length > 0)
+            return [];
+        if (mianzi.filter(function(m){return m.match(shunzi)}).length > 0)
+            return [];
+        if (mianzi.filter(function(m){return m.match(zipai)}).length > 0)
+            return [];
+        return [{ name: '清老頭', fanshu: '*' }];
+    }
+    function sigangzi() {
+        if (mianzi.length != 5)             return [];
+        if (mianzi.filter(function(m){return m.match(gangzi)}).length != 4)
+            return [];
+        return [{ name: '四槓子', fanshu: '*' }];
+    }
+    function jiulianbaodeng() {
+        if (mianzi.length != 1)             return [];
+        if (! mianzi[0].match(/^[mps]1112345678999/))
+            return [{ name: '九蓮宝燈', fanshu: '*' }];
+        else    return [{ name: '純正九蓮宝燈', fanshu: '**' }];
+    }
+
+    var damanguan = []
+        .concat(guoshiwushuang())
+        .concat(sianke())
+        .concat(dasanyuan())
+        .concat(sixihu())
+        .concat(ziyise())
+        .concat(lvyise())
+        .concat(qinglaotou())
+        .concat(sigangzi())
+        .concat(jiulianbaodeng());
+
+    if (damanguan.length > 0) return damanguan
+    else return    [].concat(menqianqing())
         .concat(fanpai())
         .concat(pinghu())
         .concat(duanyaojiu())

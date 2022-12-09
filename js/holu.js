@@ -152,6 +152,28 @@ function hule_guoshi(shoupai, rongpai) {
     return [hule_mianzi];
 }
 
+function hule_jiulian(shoupai, rongpai) {
+
+    var hulepai = rongpai || shoupai._zimo;
+
+    var s = hulepai[0];
+    if (s == 'z') return [];
+
+    var hule_mianzi = s;
+    var pai = shoupai._shouli[s];
+    for (var n = 1; n <= 9; n++) {
+        if ((n == 1 || n == 9) && pai[n-1] < 3) return [];
+        if (pai[n-1] == 0) return [];
+        var nn = (n == hulepai[1]) ? pai[n-1] -1 : pai[n-1];
+        for (var i = 0; i < nn; i++) {
+            hule_mianzi += n;
+        }
+    }
+    hule_mianzi += hulepai.substr(1) + '_';
+
+    return [[hule_mianzi]];
+}
+
 function hule(shoupai, rongpai) {
 
     if (rongpai) {
@@ -159,7 +181,8 @@ function hule(shoupai, rongpai) {
         shoupai._shouli[rongpai[0]][rongpai[1]-1]++;
     }
 
-    return [].concat(hule_yiban(shoupai, rongpai))
-        .concat(hule_qiduizi(shoupai, rongpai))
-        .concat(hule_guoshi(shoupai, rongpai))
+    return [].concat(hule_yiban(new_shoupai, rongpai))
+        .concat(hule_qiduizi(new_shoupai, rongpai))
+        .concat(hule_guoshi(new_shoupai, rongpai))
+        .concat(hule_jiulian(new_shoupai, rongpai));
 }
