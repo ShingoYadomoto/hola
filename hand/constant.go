@@ -2,6 +2,8 @@ package hand
 
 type HandType int
 
+type AllHands []HandType
+
 const (
 	門前清自摸和 HandType = iota + 1
 	場風
