@@ -304,9 +304,9 @@ func TestHolaMianzi(t *testing.T) {
 					{pais: []pai{一萬, 二萬, 三萬}},
 				},
 				{
-					{pais: []pai{一萬, 一萬, 一萬}},
-					{pais: []pai{二萬, 二萬, 二萬}},
 					{pais: []pai{三萬, 三萬, 三萬}},
+					{pais: []pai{二萬, 二萬, 二萬}},
+					{pais: []pai{一萬, 一萬, 一萬}},
 				},
 			},
 		},
