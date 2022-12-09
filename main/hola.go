@@ -1,5 +1,9 @@
 package main
 
+import (
+	"sort"
+)
+
 // HolaMianzi() は各色の中で面子を探す処理(パターン2はここで処理)。
 func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 	if checkPai.Index == 10 {
@@ -47,7 +51,7 @@ func HolaMianzi(pais map[pai]int, checkPai pai) [][]mentsu {
 
 // HuleMianziAll() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
 func HuleMianziAll(hand Hand) [][]mentsu {
-	mianzi := [][]mentsu{}
+	mianzi := [][]mentsu{{}}
 
 	for _, t := range []paiType{paiTypeManzu, paiTypePinzu, paiTypeSozu} {
 		pais := map[pai]int{}
@@ -60,10 +64,6 @@ func HuleMianziAll(hand Hand) [][]mentsu {
 		newMianzi := [][]mentsu{}
 		unit := pai{Type: t, Index: 1}
 		subMianzi := HolaMianzi(pais, unit)
-		if len(mianzi) == 0 {
-			mianzi = subMianzi
-			continue
-		}
 
 		for _, m := range mianzi {
 			for _, n := range subMianzi {
@@ -94,87 +94,54 @@ func HuleMianziAll(hand Hand) [][]mentsu {
 	return mianzi
 }
 
-/*
-// hule_mianzi_all() は4面子1雀頭形について雀頭以外の面子を探す処理。各色ごとに hule_mianzi() を呼出している。
-function hule_mianzi_all(shoupai) {
-
-    var mianzi = [[]];
-
-    for (var s of ['m','p','s']) {
-        var new_mianzi = [];
-        var sub_mianzi = hule_mianzi(s, shoupai._shouli[s], 0);
-        for (var m of mianzi) {
-            for (var n of sub_mianzi) {
-                new_mianzi.push(m.concat(n));
-            }
-        }
-        mianzi = new_mianzi;
-    }
-
-    var sub_mianzi_z = [];
-    for (var n = 1; n <= 7; n++) {
-        if (shoupai._shouli.z[n-1] == 0) continue;
-        if (shoupai._shouli.z[n-1] != 3) return [];
-        sub_mianzi_z.push('z'+n+n+n);
-    }
-
-    for (var i = 0; i < mianzi.length; i++) {
-        mianzi[i] = mianzi[i].concat(sub_mianzi_z)
-                             .concat(shoupai._fulou);
-    }
-
-    return mianzi;
-}
-
-// add_hulepai() は和了牌を可能性のあるすべての面子に入れる処理(パターン4はここで処理)。
-function add_hulepai(mianzi, hulepai) {
-
-    var regexp   = new RegExp('^(' + hulepai[0] + '.*' + hulepai[1] +')');
-    var replacer = '$1' + hulepai.substr(2) + '_';
-
-    var add_mianzi = [];
-    for (var i = 0; i < mianzi.length; i++) {
-        if (mianzi[i].match(/[\-\+\=]/)) continue;
-        if (i > 0 && mianzi[i] == mianzi[i-1]) continue;
-        var rep = mianzi[i].replace(regexp, replacer);
-        if (rep == mianzi[i]) continue;
-        var new_mianzi = mianzi.concat();
-        new_mianzi[i] = rep;
-        add_mianzi.push(new_mianzi);
-    }
-
-    return add_mianzi;
-}
-
-function hule_yiban(shoupai, rongpai) {
-
-    var hulepai = rongpai || shoupai._zimo;
-
-    var hule_mianzi = [];
-    for (var s in shoupai._shouli) {
-        var pai = shoupai._shouli[s];
-        for (var n = 1; n <= pai.length; n++) {
-            if (pai[n-1] < 2) continue;
-            var jiangpai = s+n+n;
-            pai[n-1] -= 2;
-            for (var mianzi of hule_mianzi_all(shoupai)) {
-                mianzi.unshift(jiangpai);
-                for (var add_mianzi of add_hulepai(mianzi, hulepai)) {
-                    hule_mianzi.push(add_mianzi);
-                }
-            }
-            pai[n-1] += 2;
-        }
-    }
-
-    return hule_mianzi;
-}
-
-*/
-
 // HolaYiban は4面子1雀頭形の処理。
 // まず可能性のある雀頭を抜き出し(パターン3の処理)、hule_mianzi_all() に処理を任せた後、add_hulepai() を呼出して和了牌の位置を決めている。
-func HolaYiban(hand Hand, rongpai *pai) []StandardHolaHand { return nil }
+func HolaYiban(hand Hand, rongpai *pai) []StandardHolaHand {
+	var holaPai pai
+	if rongpai == nil {
+		holaPai = *hand.TsumoPai
+	} else {
+		holaPai = *rongpai
+	}
+
+	var (
+		huleMianzi = []StandardHolaHand{}
+		paiList    = make([]pai, len(hand.Menzen))
+	)
+	i := 0
+	for pai, _ := range hand.Menzen {
+		paiList[i] = pai
+		i++
+	}
+
+	sort.Slice(paiList, func(i, j int) bool {
+		if paiList[i].Type == paiList[j].Type {
+			return paiList[i].Index < paiList[j].Index
+		}
+
+		return paiList[i].Type < paiList[j].Type
+	})
+	for _, pai := range paiList {
+		count := hand.Menzen[pai]
+		if count < 2 {
+			continue
+		}
+
+		holahand := StandardHolaHand{
+			Head:    pai,
+			HolaPai: holaPai,
+		}
+		hand.Menzen[pai] -= 2
+		all := HuleMianziAll(hand)
+		for _, mianzi := range all {
+			holahand.Mentsu = mianzi
+			huleMianzi = append(huleMianzi, holahand)
+		}
+		hand.Menzen[pai] += 2
+	}
+
+	return huleMianzi
+}
 
 // HolaGiduizi は七対子形の処理。
 func HolaGiduizi(hand Hand, rongpai *pai) *TitoitsuHolaHand {

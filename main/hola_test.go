@@ -321,6 +321,21 @@ func TestHolaMianzi(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "",
+			args: args{
+				pais: map[pai]int{
+					二筒: 2,
+					三筒: 2,
+					五筒: 3,
+					六筒: 1,
+					七筒: 1,
+					八筒: 1,
+					九筒: 2,
+				},
+			},
+			want: [][]mentsu{{}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -469,6 +484,134 @@ func TestHuleMianziAll(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, HuleMianziAll(tt.args.hand), "HuleMianziAll(%v)", tt.args.hand)
+		})
+	}
+}
+
+func TestHolaYiban(t *testing.T) {
+	type args struct {
+		hand    Hand
+		rongpai *pai
+	}
+	tests := []struct {
+		name string
+		args args
+		want []StandardHolaHand
+	}{
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 3,
+						二萬: 3,
+						三萬: 3,
+						七索: 1,
+						八索: 1,
+						九索: 3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: []StandardHolaHand{
+				{
+					Mentsu: []mentsu{
+						{pais: []pai{一萬, 二萬, 三萬}},
+						{pais: []pai{一萬, 二萬, 三萬}},
+						{pais: []pai{一萬, 二萬, 三萬}},
+						{pais: []pai{七索, 八索, 九索}},
+					},
+					Head:    九索,
+					HolaPai: 九索,
+				},
+				{
+					Mentsu: []mentsu{
+						{pais: []pai{三萬, 三萬, 三萬}},
+						{pais: []pai{二萬, 二萬, 二萬}},
+						{pais: []pai{一萬, 一萬, 一萬}},
+						{pais: []pai{七索, 八索, 九索}},
+					},
+					Head:    九索,
+					HolaPai: 九索,
+				},
+			},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						一萬: 2,
+						二萬: 2,
+						三萬: 2,
+						七索: 1,
+						八索: 1,
+						九索: 3,
+						白:  3,
+					},
+					TsumoPai: &九索,
+				},
+			},
+			want: []StandardHolaHand{
+				{
+					Mentsu: []mentsu{
+						{pais: []pai{一萬, 二萬, 三萬}},
+						{pais: []pai{一萬, 二萬, 三萬}},
+						{pais: []pai{七索, 八索, 九索}},
+						{pais: []pai{白, 白, 白}},
+					},
+					Head:    九索,
+					HolaPai: 九索,
+				},
+			},
+		},
+		{
+			name: "",
+			args: args{
+				hand: Hand{
+					Menzen: map[pai]int{
+						二萬: 2,
+						三萬: 2,
+						四萬: 2,
+						五萬: 2,
+						一筒: 1,
+						二筒: 1,
+						三筒: 1,
+						二索: 1,
+						三索: 1,
+						四索: 1,
+					},
+					TsumoPai: &三萬,
+				},
+			},
+			want: []StandardHolaHand{
+				{
+					Mentsu: []mentsu{
+						{pais: []pai{三萬, 四萬, 五萬}},
+						{pais: []pai{三萬, 四萬, 五萬}},
+						{pais: []pai{一筒, 二筒, 三筒}},
+						{pais: []pai{二索, 三索, 四索}},
+					},
+					Head:    二萬,
+					HolaPai: 三萬,
+				},
+				{
+					Mentsu: []mentsu{
+						{pais: []pai{二萬, 三萬, 四萬}},
+						{pais: []pai{二萬, 三萬, 四萬}},
+						{pais: []pai{一筒, 二筒, 三筒}},
+						{pais: []pai{二索, 三索, 四索}},
+					},
+					Head:    五萬,
+					HolaPai: 三萬,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := HolaYiban(tt.args.hand, tt.args.rongpai)
+			assert.Equalf(t, tt.want, got, "HolaYiban(%v, %v)", tt.args.hand, tt.args.rongpai)
 		})
 	}
 }
