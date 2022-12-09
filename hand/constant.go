@@ -1,9 +1,9 @@
 package hand
 
-type handType int
+type HandType int
 
 const (
-	門前清自摸和 handType = iota + 1
+	門前清自摸和 HandType = iota + 1
 	場風
 	自風
 	白
@@ -30,7 +30,7 @@ const (
 
 type Fanshu int
 
-func (ht handType) Fanshu(isMenzen bool) Fanshu {
+func (ht HandType) Fanshu(isMenzen bool) Fanshu {
 	var fanshu Fanshu
 
 	switch ht {
@@ -59,3 +59,21 @@ func (ht handType) Fanshu(isMenzen bool) Fanshu {
 
 	return fanshu
 }
+
+type zhuangfeng int
+
+const (
+	東家 zhuangfeng = iota + 1
+	西家
+	南家
+	北家
+)
+
+type zifeng int
+
+const (
+	東場 zifeng = iota + 1
+	西場
+	南場
+	北場
+)
