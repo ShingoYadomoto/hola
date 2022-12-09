@@ -14,25 +14,31 @@ func NewHupaiCalculater(standard StandardHoluPattern, zhuangfeng Zhuangfeng, zif
 	}
 }
 
-func (hc HupaiCalculater) menzen() AllHands {
+func (hc HupaiCalculater) menzen() HandType {
 	if hc.standard.IsMenzen() {
-		return AllHands{門前清自摸和}
+		return 門前清自摸和
 	}
-	return AllHands{}
+	return 0
 }
 
-func (hc HupaiCalculater) zhuangfengpai() AllHands {
+func (hc HupaiCalculater) fengpai() []HandType {
+	hands := []HandType{}
 	if hc.standard.IsZhuangfengpai(hc.zhuangfeng) {
-		return AllHands{翻牌場風}
+		hands = append(hands, 翻牌場風)
 	}
-	return AllHands{}
-}
-
-func (hc HupaiCalculater) zifengpai() AllHands {
 	if hc.standard.IsZifeng(hc.zifeng) {
-		return AllHands{翻牌自風}
+		hands = append(hands, 翻牌自風)
 	}
-	return AllHands{}
+	if hc.standard.HasKotsu(白) {
+		hands = append(hands, 翻牌白)
+	}
+	if hc.standard.HasKotsu(發) {
+		hands = append(hands, 翻牌發)
+	}
+	if hc.standard.HasKotsu(中) {
+		hands = append(hands, 翻牌中)
+	}
+	return hands
 }
 
 type FullHupaiCalculater struct {
@@ -48,9 +54,8 @@ func (fhc FullHupaiCalculater) Hupai() AllHands {
 	for _, standard := range fhc.fullParrern.Standard {
 		calculater := NewHupaiCalculater(standard, fhc.zhuangfeng, fhc.zifeng)
 
-		all = append(all, calculater.menzen()...)        // 門前
-		all = append(all, calculater.zhuangfengpai()...) // 場風
-		all = append(all, calculater.zifengpai()...)     // 自風
+		all = append(all, calculater.menzen())     // 門前
+		all = append(all, calculater.fengpai()...) // 場風・自風・白・發・中
 	}
 
 	return nil
