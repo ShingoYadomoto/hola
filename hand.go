@@ -141,10 +141,19 @@ func (hc HupaiCalculater) suAnko() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) daisangen() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) sushi() []HandType     { panic("not implemented") }
-func (hc HupaiCalculater) tsuiso() []HandType    { panic("not implemented") }
-func (hc HupaiCalculater) ryuiso() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) daisangen() []HandType {
+	for _, p := range []pai{白, 發, 中} {
+		if !hc.standard.HasSpecificKotsuOrKantsu(p) {
+			return []HandType{}
+		}
+	}
+
+	return []HandType{大三元}
+}
+
+func (hc HupaiCalculater) sushi() []HandType  { panic("not implemented") }
+func (hc HupaiCalculater) tsuiso() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) ryuiso() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) chinro() []HandType {
 	if !hc.standard.HasChunchan() && !hc.standard.HasZi() {
