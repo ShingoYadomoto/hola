@@ -1,9 +1,5 @@
 package hola_go
 
-import (
-	"reflect"
-)
-
 type (
 	mentsu struct {
 		pais []pai
@@ -30,6 +26,30 @@ func (m mentsu) Type() mentsuType {
 		prevent = current
 	}
 	return mentsuTypeKotsu
+}
+
+func (m mentsu) Equal(compare mentsu) bool {
+	if len(m.pais) != len(compare.pais) {
+		return false
+	}
+
+	checker := map[pai]int{}
+	for _, pai := range m.pais {
+		checker[pai]++
+	}
+
+	for _, com := range compare.pais {
+		if _, exist := checker[com]; !exist {
+			return false
+		}
+		checker[com]--
+
+		if checker[com] == 0 {
+			delete(checker, com)
+		}
+	}
+
+	return len(checker) == 0
 }
 
 // 和了型全パターン
@@ -81,20 +101,20 @@ func (shp StandardHoluPattern) HasYaojiu() bool {
 	return false
 }
 
-func (shp StandardHoluPattern) HasSameShuntsuInMenzen() bool {
-	for i, mentsu1 := range shp.Mentsu {
-		for j, mentsu2 := range shp.Mentsu {
-			if i == j {
-				continue
-			}
-			if reflect.DeepEqual(mentsu1, mentsu2) {
-				return true
-			}
-		}
-	}
-
-	return false
-}
+//func (shp StandardHoluPattern) SameShuntsuCountInMenzen() int {
+//	for i, mentsu1 := range shp.Mentsu {
+//		for j, mentsu2 := range shp.Mentsu {
+//			if i == j {
+//				continue
+//			}
+//			if reflect.DeepEqual(mentsu1, mentsu2) {
+//				return true
+//			}
+//		}
+//	}
+//
+//	return false
+//}
 
 func (shp StandardHoluPattern) IsZhuangfengpai(zhuangfeng Zhuangfeng) bool {
 	var (
