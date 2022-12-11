@@ -62,10 +62,24 @@ func (hc HupaiCalculater) ipeko() []HandType {
 func (hc HupaiCalculater) sansyokuDoujun() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) ittu() []HandType           { panic("not implemented") }
 func (hc HupaiCalculater) chanta() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) toitoi() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) sanAnko() []HandType        { panic("not implemented") }
-func (hc HupaiCalculater) sanKantsu() []HandType      { panic("not implemented") }
-func (hc HupaiCalculater) sansyokuDoko() []HandType   { panic("not implemented") }
+
+func (hc HupaiCalculater) toitoi() []HandType {
+	c := 0
+	for _, m := range hc.standard.FiveBlocks() {
+		if m.TypeIs(mentsuTypeKotsu) {
+			c++
+		}
+	}
+
+	if c == 4 {
+		return []HandType{対々和}
+	}
+	return []HandType{}
+}
+
+func (hc HupaiCalculater) sanAnko() []HandType      { panic("not implemented") }
+func (hc HupaiCalculater) sanKantsu() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) sansyokuDoko() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) honnro() []HandType {
 	if !hc.standard.HasChunchan() && hc.standard.HasZi() {
