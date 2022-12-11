@@ -99,8 +99,21 @@ func (hc HupaiCalculater) chinro() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) suKantsu() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) churen() []HandType   { panic("not implemented") }
+func (hc HupaiCalculater) suKantsu() []HandType {
+	c := 0
+	for _, m := range hc.standard.FiveBlocks() {
+		if m.TypeIs(mentsuTypeKantsu) {
+			c++
+		}
+	}
+
+	if c == 4 {
+		return []HandType{四槓子}
+	}
+	return []HandType{}
+}
+
+func (hc HupaiCalculater) churen() []HandType { panic("not implemented") }
 
 type FullHupaiCalculater struct {
 	fullParrern FullHoluPattern
