@@ -182,6 +182,9 @@ func (hc HupaiCalculater) suAnko() []HandType {
 	}
 
 	if c == 4 {
+		if MentsuList(hc.standard.Mentsu).WaitTypeIs(WaitTypeTanki) {
+			return []HandType{四暗刻単騎}
+		}
 		return []HandType{四暗刻}
 	}
 	return []HandType{}

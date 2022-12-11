@@ -2,11 +2,13 @@ package hola_go
 
 import (
 	"math"
+	"sort"
 )
 
 type (
 	mentsu struct {
-		pais []pai
+		pais    []pai
+		holuPai *pai
 	}
 	mentsuType int
 )
@@ -110,6 +112,50 @@ func (m mentsu) HashCode() int {
 		}
 	}
 	return code
+}
+
+type (
+	MentsuList []mentsu
+
+	WaitType int
+)
+
+const (
+	WaitTypeTanki WaitType = iota + 1
+	WaitTypeTamen
+	WaitTypeKanchan
+	WaitTypeShanpon
+)
+
+func (ml MentsuList) WaitTypeIs(wt WaitType) bool {
+	var (
+		holuMentsu = mentsu{}
+		holuPai    = pai{}
+	)
+	for _, m := range ml {
+		if m.holuPai != nil {
+			holuMentsu = m
+			holuPai = *m.holuPai
+			break
+		}
+	}
+
+	if holuMentsu.TypeIs(mentsuTypehead) {
+		return wt == WaitTypeTanki
+	}
+	if holuMentsu.TypeIs(mentsuTypeKotsu) {
+		return wt == WaitTypeShanpon
+	}
+
+	paiList := holuMentsu.pais
+	sort.Slice(paiList, func(i, j int) bool {
+		return paiList[i].Index < paiList[j].Index
+	})
+	if paiList[1] == holuPai {
+		return wt == WaitTypeKanchan
+	}
+
+	return wt == WaitTypeTamen
 }
 
 // 和了型全パターン
