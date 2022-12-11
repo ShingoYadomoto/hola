@@ -202,7 +202,12 @@ func (hc HupaiCalculater) daisangen() []HandType {
 
 func (hc HupaiCalculater) sushi() []HandType  { panic("not implemented") }
 func (hc HupaiCalculater) tsuiso() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) ryuiso() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) ryuiso() []HandType {
+	if hc.standard.IsUseOnly([]pai{二索, 三索, 四索, 六索, 八索, 發}) {
+		return []HandType{緑一色}
+	}
+	return []HandType{}
+}
 
 func (hc HupaiCalculater) chinro() []HandType {
 	if hc.standard.IsNotUse(YaojiuList) && !hc.standard.HasZi() {
