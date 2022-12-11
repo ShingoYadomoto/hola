@@ -1,7 +1,35 @@
 package hola_go
 
-type mentsu struct {
-	pais []pai
+import (
+	"reflect"
+)
+
+type (
+	mentsu struct {
+		pais []pai
+	}
+	mentsuType int
+)
+
+const (
+	mentsuTypeShuntsu mentsuType = iota + 1
+	mentsuTypeKotsu
+	mentsuTypeKantsu
+)
+
+func (m mentsu) Type() mentsuType {
+	if len(m.pais) == 4 {
+		return mentsuTypeKantsu
+	}
+
+	prevent := pai{}
+	for _, current := range m.pais {
+		if !prevent.IsZero() && current != prevent {
+			return mentsuTypeShuntsu
+		}
+		prevent = current
+	}
+	return mentsuTypeKotsu
 }
 
 // 和了型全パターン
@@ -35,6 +63,33 @@ func (shp StandardHoluPattern) HasKotsu(p pai) bool {
 		}
 		if isKotsu {
 			return true
+		}
+	}
+
+	return false
+}
+
+func (shp StandardHoluPattern) HasYaojiu() bool {
+	for _, mentsu := range append(shp.Mentsu, shp.FulouMentsu...) {
+		for _, pai := range mentsu.pais {
+			if _, isYaojiu := YaojiuMap[pai]; isYaojiu {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (shp StandardHoluPattern) HasSameShuntsuInMenzen() bool {
+	for i, mentsu1 := range shp.Mentsu {
+		for j, mentsu2 := range shp.Mentsu {
+			if i == j {
+				continue
+			}
+			if reflect.DeepEqual(mentsu1, mentsu2) {
+				return true
+			}
 		}
 	}
 
