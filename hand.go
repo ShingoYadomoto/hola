@@ -91,9 +91,16 @@ func (hc HupaiCalculater) daisangen() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) sushi() []HandType     { panic("not implemented") }
 func (hc HupaiCalculater) tsuiso() []HandType    { panic("not implemented") }
 func (hc HupaiCalculater) ryuiso() []HandType    { panic("not implemented") }
-func (hc HupaiCalculater) chinro() []HandType    { panic("not implemented") }
-func (hc HupaiCalculater) suKantsu() []HandType  { panic("not implemented") }
-func (hc HupaiCalculater) churen() []HandType    { panic("not implemented") }
+
+func (hc HupaiCalculater) chinro() []HandType {
+	if !hc.standard.HasChunchan() && !hc.standard.HasZi() {
+		return []HandType{清老頭}
+	}
+	return []HandType{}
+}
+
+func (hc HupaiCalculater) suKantsu() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) churen() []HandType   { panic("not implemented") }
 
 type FullHupaiCalculater struct {
 	fullParrern FullHoluPattern
