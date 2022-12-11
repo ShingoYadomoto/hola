@@ -122,6 +122,16 @@ func Test_mentsu_HashCode(t *testing.T) {
 		{八萬, 八萬, 八萬, 八萬},
 		{九萬, 九萬, 九萬, 九萬},
 
+		{一萬, 一萬},
+		{二萬, 二萬},
+		{三萬, 三萬},
+		{四萬, 四萬},
+		{五萬, 五萬},
+		{六萬, 六萬},
+		{七萬, 七萬},
+		{八萬, 八萬},
+		{九萬, 九萬},
+
 		// 萬子
 		{一筒, 二筒, 三筒},
 		{二筒, 三筒, 四筒},
@@ -150,6 +160,16 @@ func Test_mentsu_HashCode(t *testing.T) {
 		{七筒, 七筒, 七筒, 七筒},
 		{八筒, 八筒, 八筒, 八筒},
 		{九筒, 九筒, 九筒, 九筒},
+
+		{一筒, 一筒},
+		{二筒, 二筒},
+		{三筒, 三筒},
+		{四筒, 四筒},
+		{五筒, 五筒},
+		{六筒, 六筒},
+		{七筒, 七筒},
+		{八筒, 八筒},
+		{九筒, 九筒},
 
 		// 索子
 		{一索, 二索, 三索},
@@ -180,6 +200,16 @@ func Test_mentsu_HashCode(t *testing.T) {
 		{八索, 八索, 八索, 八索},
 		{九索, 九索, 九索, 九索},
 
+		{一索, 一索},
+		{二索, 二索},
+		{三索, 三索},
+		{四索, 四索},
+		{五索, 五索},
+		{六索, 六索},
+		{七索, 七索},
+		{八索, 八索},
+		{九索, 九索},
+
 		// 字牌
 		{東, 東, 東},
 		{南, 南, 南},
@@ -196,19 +226,27 @@ func Test_mentsu_HashCode(t *testing.T) {
 		{白, 白, 白, 白},
 		{發, 發, 發, 發},
 		{中, 中, 中, 中},
+
+		{東, 東},
+		{南, 南},
+		{西, 西},
+		{北, 北},
+		{白, 白},
+		{發, 發},
+		{中, 中},
 	}
 
-	checker := map[int]struct{}{}
+	checker := map[int][]pai{}
 	for _, pais := range allMentsu {
 		t.Run("", func(t *testing.T) {
 			var (
 				m    = mentsu{pais: pais}
 				code = m.HashCode()
 			)
-			if _, dup := checker[code]; dup {
-				t.Errorf("HashCode() = %v, mentsu %v", code, pais)
+			if pais1, dup := checker[code]; dup {
+				t.Errorf("HashCode() = %v, mentsu1 %v,mentsu2 %v", code, pais1, pais)
 			}
-			checker[code] = struct{}{}
+			checker[code] = pais
 		})
 	}
 }

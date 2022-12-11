@@ -15,9 +15,37 @@ const (
 	mentsuTypeShuntsu mentsuType = iota + 1
 	mentsuTypeKotsu
 	mentsuTypeKantsu
+	mentsuTypehead
 )
 
+func newMentsu(pai1, pai2 pai, pais ...pai) mentsu {
+	m := mentsu{pais: []pai{pai1, pai2}}
+	for _, pai := range pais {
+		m.pais = append(m.pais, pai)
+	}
+	return m
+}
+
+func NewShuntsu(pai1, pai2, pai3 pai) mentsu {
+	return newMentsu(pai1, pai2, pai3)
+}
+
+func NewKotsu(pai pai) mentsu {
+	return newMentsu(pai, pai, pai)
+}
+
+func NewKantsu(pai pai) mentsu {
+	return newMentsu(pai, pai, pai, pai)
+}
+
+func NewHead(pai pai) mentsu {
+	return newMentsu(pai, pai)
+}
+
 func (m mentsu) TypeIs(t mentsuType) bool {
+	if len(m.pais) == 2 {
+		return t == mentsuTypehead
+	}
 	if len(m.pais) == 4 {
 		return t == mentsuTypeKantsu
 	}
@@ -64,10 +92,23 @@ func (m mentsu) HashCode() int {
 
 	for _, pai := range m.pais {
 		t = pai.Type
-		code += int(math.Pow(2, float64(pai.Index)))
+		code += int(math.Pow(3, float64(pai.Index)))
 	}
 
 	code += int(t) * 10000
+
+	allTypes := map[mentsuType]int{
+		mentsuTypehead:    1,
+		mentsuTypeShuntsu: 2,
+		mentsuTypeKotsu:   3,
+		mentsuTypeKantsu:  4,
+	}
+	for t, c := range allTypes {
+		if m.TypeIs(t) {
+			code += c
+			break
+		}
+	}
 	return code
 }
 
@@ -87,21 +128,24 @@ type StandardHoluPattern struct {
 	HoluPai     pai             // 和了牌
 }
 
+func (shp StandardHoluPattern) FiveBlocks() []mentsu {
+	ret := []mentsu{NewHead(shp.Head)}
+	ret = append(ret, shp.Mentsu...)
+	ret = append(ret, shp.FulouMentsu.MentsuList()...)
+
+	return ret
+}
+
 func (shp StandardHoluPattern) IsMenzen() bool {
 	return len(shp.FulouMentsu) == 0
 }
 
-func (shp StandardHoluPattern) HasKotsu(p pai) bool {
-	for _, mentsu := range append(shp.Mentsu, shp.FulouMentsu.MentsuList()...) {
-		isKotsu := true
-		for _, pai := range mentsu.pais {
-			if pai != p {
-				isKotsu = false
-				break
+func (shp StandardHoluPattern) HasSpecificKotsuOrKantsu(p pai) bool {
+	for _, mentsu := range shp.FiveBlocks() {
+		if mentsu.TypeIs(mentsuTypeKotsu) || mentsu.TypeIs(mentsuTypeKantsu) {
+			if mentsu.pais[0] == p {
+				return true
 			}
-		}
-		if isKotsu {
-			return true
 		}
 	}
 
@@ -109,9 +153,33 @@ func (shp StandardHoluPattern) HasKotsu(p pai) bool {
 }
 
 func (shp StandardHoluPattern) HasYaojiu() bool {
-	for _, mentsu := range append(shp.Mentsu, shp.FulouMentsu.MentsuList()...) {
+	for _, mentsu := range shp.FiveBlocks() {
 		for _, pai := range mentsu.pais {
 			if _, isYaojiu := YaojiuMap[pai]; isYaojiu {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (shp StandardHoluPattern) HasChunchan() bool {
+	for _, mentsu := range shp.FiveBlocks() {
+		for _, pai := range mentsu.pais {
+			if _, isYaojiu := YaojiuMap[pai]; !isYaojiu {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (shp StandardHoluPattern) HasZi() bool {
+	for _, mentsu := range shp.FiveBlocks() {
+		for _, pai := range mentsu.pais {
+			if pai.TypeIs(paiTypeZi) {
 				return true
 			}
 		}
@@ -143,7 +211,7 @@ func (shp StandardHoluPattern) IsZhuangfengpai(zhuangfeng Zhuangfeng) bool {
 		fanpai    = fanpaimap[zhuangfeng]
 	)
 
-	return shp.HasKotsu(fanpai)
+	return shp.HasSpecificKotsuOrKantsu(fanpai)
 }
 
 func (shp StandardHoluPattern) IsZifeng(zifeng Zifeng) bool {
@@ -152,7 +220,7 @@ func (shp StandardHoluPattern) IsZifeng(zifeng Zifeng) bool {
 		fanpai    = fanpaimap[zifeng]
 	)
 
-	return shp.HasKotsu(fanpai)
+	return shp.HasSpecificKotsuOrKantsu(fanpai)
 }
 
 // 七対子形の和了型

@@ -31,13 +31,13 @@ func (hc HupaiCalculater) fengpai() []HandType {
 	if hc.standard.IsZifeng(hc.zifeng) {
 		hands = append(hands, 翻牌自風)
 	}
-	if hc.standard.HasKotsu(白) {
+	if hc.standard.HasSpecificKotsuOrKantsu(白) {
 		hands = append(hands, 翻牌白)
 	}
-	if hc.standard.HasKotsu(發) {
+	if hc.standard.HasSpecificKotsuOrKantsu(發) {
 		hands = append(hands, 翻牌發)
 	}
-	if hc.standard.HasKotsu(中) {
+	if hc.standard.HasSpecificKotsuOrKantsu(中) {
 		hands = append(hands, 翻牌中)
 	}
 	return hands
@@ -66,10 +66,17 @@ func (hc HupaiCalculater) toitoi() []HandType         { panic("not implemented")
 func (hc HupaiCalculater) sanAnko() []HandType        { panic("not implemented") }
 func (hc HupaiCalculater) sanKantsu() []HandType      { panic("not implemented") }
 func (hc HupaiCalculater) sansyokuDoko() []HandType   { panic("not implemented") }
-func (hc HupaiCalculater) honnro() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) syosangen() []HandType      { panic("not implemented") }
-func (hc HupaiCalculater) honnitsu() []HandType       { panic("not implemented") }
-func (hc HupaiCalculater) junchan() []HandType        { panic("not implemented") }
+
+func (hc HupaiCalculater) honnro() []HandType {
+	if !hc.standard.HasChunchan() && hc.standard.HasZi() {
+		return []HandType{混老頭}
+	}
+	return []HandType{}
+}
+
+func (hc HupaiCalculater) syosangen() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) honnitsu() []HandType  { panic("not implemented") }
+func (hc HupaiCalculater) junchan() []HandType   { panic("not implemented") }
 
 func (hc HupaiCalculater) ryanpeko() []HandType {
 	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 2 {
