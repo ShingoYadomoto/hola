@@ -75,4 +75,6 @@ var (
 	白 = pai{Type: paiTypeZi, Index: paiIndex5}
 	發 = pai{Type: paiTypeZi, Index: paiIndex6}
 	中 = pai{Type: paiTypeZi, Index: paiIndex7}
+
+	YaojiuMap = map[pai]struct{}{一萬: {}, 九萬: {}, 一筒: {}, 九筒: {}, 一索: {}, 九索: {}, 東: {}, 南: {}, 西: {}, 北: {}, 白: {}, 發: {}, 中: {}}
 )

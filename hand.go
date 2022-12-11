@@ -41,8 +41,15 @@ func (hc HupaiCalculater) fengpai() []HandType {
 	return hands
 }
 
-func (hc HupaiCalculater) pinfu() []HandType          { panic("not implemented") }
-func (hc HupaiCalculater) tanyao() []HandType         { panic("not implemented") }
+func (hc HupaiCalculater) pinfu() []HandType { panic("not implemented") }
+
+func (hc HupaiCalculater) tanyao() []HandType {
+	if !hc.standard.HasYaojiu() {
+		return []HandType{断幺九}
+	}
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) ipeko() []HandType          { panic("not implemented") }
 func (hc HupaiCalculater) sansyokuDoujun() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) ittu() []HandType           { panic("not implemented") }
