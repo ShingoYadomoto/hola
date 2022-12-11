@@ -200,7 +200,24 @@ func (hc HupaiCalculater) daisangen() []HandType {
 	return []HandType{大三元}
 }
 
-func (hc HupaiCalculater) sushi() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) sushi() []HandType {
+	var (
+		usable    = []pai{東, 南, 西, 北}
+		usableMap = map[pai]struct{}{}
+	)
+
+	if !hc.standard.IsUseOnly(usable) {
+		return []HandType{}
+	}
+
+	for _, pai := range usable {
+		usableMap[pai] = struct{}{}
+	}
+	if _, isShou := usableMap[hc.standard.Head]; isShou {
+		return []HandType{小四喜}
+	}
+	return []HandType{大四喜}
+}
 
 func (hc HupaiCalculater) tsuiso() []HandType {
 	if hc.standard.IsUseOnly([]pai{東, 南, 西, 北, 白, 發, 中}) {
