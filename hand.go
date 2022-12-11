@@ -255,7 +255,31 @@ func (hc HupaiCalculater) suKantsu() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) churen() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) churen() []HandType {
+	colorTypeMap := map[paiType]struct{}{}
+
+	for _, mentsu := range hc.standard.FiveBlocks() {
+		for _, pai := range mentsu.pais {
+			if pai.TypeIs(paiTypeZi) {
+				return []HandType{}
+			}
+
+			colorTypeMap[pai.Type] = struct{}{}
+		}
+	}
+	if len(colorTypeMap) != 1 {
+		return []HandType{}
+	}
+
+	// ToDo:1112345678999系
+	if true {
+		if MentsuList(hc.standard.Mentsu).WaitTypeIs(WaitTypeTanki) {
+			return []HandType{純正九蓮宝燈}
+		}
+		return []HandType{九蓮宝燈}
+	}
+	return []HandType{}
+}
 
 type FullHupaiCalculater struct {
 	fullParrern FullHoluPattern
@@ -385,3 +409,12 @@ func (fhc FullHupaiCalculater) titoitsuAll() AllHands {
 
 	return ret
 }
+
+/*
+平和
+三色同順
+一気通貫
+混全帯幺九
+三色同刻
+純全帯幺九
+*/
