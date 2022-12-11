@@ -77,8 +77,22 @@ func (hc HupaiCalculater) toitoi() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) sanAnko() []HandType      { panic("not implemented") }
-func (hc HupaiCalculater) sanKantsu() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) sanAnko() []HandType { panic("not implemented") }
+
+func (hc HupaiCalculater) sanKantsu() []HandType {
+	c := 0
+	for _, m := range hc.standard.FiveBlocks() {
+		if m.TypeIs(mentsuTypeKantsu) {
+			c++
+		}
+	}
+
+	if c == 3 {
+		return []HandType{三槓子}
+	}
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) sansyokuDoko() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) honnro() []HandType {
