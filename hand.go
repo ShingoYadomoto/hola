@@ -52,10 +52,19 @@ func (hc HupaiCalculater) tanyao() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) ipeko() []HandType {
-	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 1 {
-		return []HandType{一盃口}
+func (hc HupaiCalculater) peko() []HandType {
+	if !hc.standard.IsMenzen() {
+		return []HandType{}
 	}
+
+	sameCount := hc.standard.SameMentsuVariationCountInMenzen()
+	switch sameCount {
+	case 1:
+		return []HandType{一盃口}
+	case 2:
+		return []HandType{二盃口}
+	}
+
 	return []HandType{}
 }
 
@@ -136,17 +145,33 @@ func (hc HupaiCalculater) syosangen() []HandType {
 	}
 	return []HandType{}
 }
-func (hc HupaiCalculater) honnitsu() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) junchan() []HandType  { panic("not implemented") }
 
-func (hc HupaiCalculater) ryanpeko() []HandType {
-	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 2 {
-		return []HandType{二盃口}
+func (hc HupaiCalculater) isshoku() []HandType {
+	var (
+		colorTypeMap = map[paiType]struct{}{}
+		existZi      = false
+	)
+
+	for _, mentsu := range hc.standard.FiveBlocks() {
+		for _, pai := range mentsu.pais {
+			if pai.TypeIs(paiTypeZi) {
+				existZi = true
+			} else {
+				colorTypeMap[pai.Type] = struct{}{}
+			}
+		}
+	}
+	if len(colorTypeMap) == 1 {
+		if existZi {
+			return []HandType{混一色}
+		} else {
+			return []HandType{清一色}
+		}
 	}
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) tinnitsu() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) junchan() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) suAnko() []HandType {
 	c := 0
@@ -224,7 +249,7 @@ func (fhc FullHupaiCalculater) Hupai() []AllHands {
 		all = append(all, calculater.fengpai()...)        // 場風・自風・白・發・中
 		all = append(all, calculater.pinfu()...)          // 平和
 		all = append(all, calculater.tanyao()...)         // 断幺九
-		all = append(all, calculater.ipeko()...)          // 一盃口
+		all = append(all, calculater.peko()...)           // 一盃口・二盃口
 		all = append(all, calculater.sansyokuDoujun()...) // 三色同順
 		all = append(all, calculater.ittu()...)           // 一気通貫
 		all = append(all, calculater.chanta()...)         // 混全帯幺九
@@ -234,10 +259,8 @@ func (fhc FullHupaiCalculater) Hupai() []AllHands {
 		all = append(all, calculater.sansyokuDoko()...)   // 三色同刻
 		all = append(all, calculater.honnro()...)         // 混老頭
 		all = append(all, calculater.syosangen()...)      // 小三元
-		all = append(all, calculater.honnitsu()...)       // 混一色
+		all = append(all, calculater.isshoku()...)        // 混一色・清一色
 		all = append(all, calculater.junchan()...)        // 純全帯幺九
-		all = append(all, calculater.ryanpeko()...)       // 二盃口
-		all = append(all, calculater.tinnitsu()...)       // 清一色
 		all = append(all, calculater.suAnko()...)         // 四暗刻・四暗刻単騎
 		all = append(all, calculater.daisangen()...)      // 大三元
 		all = append(all, calculater.sushi()...)          // 小四喜・大四喜
