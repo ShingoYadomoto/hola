@@ -125,8 +125,22 @@ func (hc HupaiCalculater) ryanpeko() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) tinnitsu() []HandType  { panic("not implemented") }
-func (hc HupaiCalculater) suAnko() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) tinnitsu() []HandType { panic("not implemented") }
+
+func (hc HupaiCalculater) suAnko() []HandType {
+	c := 0
+	for _, m := range hc.standard.Mentsu {
+		if m.TypeIs(mentsuTypeKotsu) {
+			c++
+		}
+	}
+
+	if c == 4 {
+		return []HandType{四暗刻}
+	}
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) daisangen() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) sushi() []HandType     { panic("not implemented") }
 func (hc HupaiCalculater) tsuiso() []HandType    { panic("not implemented") }
