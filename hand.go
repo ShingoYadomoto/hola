@@ -46,7 +46,7 @@ func (hc HupaiCalculater) fengpai() []HandType {
 func (hc HupaiCalculater) pinfu() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) tanyao() []HandType {
-	if !hc.standard.HasYaojiu() {
+	if hc.standard.IsUseOnly(YaojiuList) {
 		return []HandType{断幺九}
 	}
 	return []HandType{}
@@ -117,7 +117,7 @@ func (hc HupaiCalculater) sanKantsu() []HandType {
 func (hc HupaiCalculater) sansyokuDoko() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) honnro() []HandType {
-	if !hc.standard.HasChunchan() && hc.standard.HasZi() {
+	if hc.standard.IsUseOnly(YaojiuList) && hc.standard.HasZi() {
 		return []HandType{混老頭}
 	}
 	return []HandType{}
@@ -205,7 +205,7 @@ func (hc HupaiCalculater) tsuiso() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) ryuiso() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) chinro() []HandType {
-	if !hc.standard.HasChunchan() && !hc.standard.HasZi() {
+	if hc.standard.IsNotUse(YaojiuList) && !hc.standard.HasZi() {
 		return []HandType{清老頭}
 	}
 	return []HandType{}
@@ -309,14 +309,20 @@ func (fhc FullHupaiCalculater) titoitsuAll() AllHands {
 		字一色
 	*/
 	var (
+		yaojiuMap = map[pai]struct{}{}
+
 		isTanyao     = true
 		isHonroto    = true
 		isTuisio     = true
 		colorTypeMap = map[paiType]struct{}{}
 		existZi      = false
 	)
+	for _, pai := range YaojiuList {
+		yaojiuMap[pai] = struct{}{}
+	}
+
 	for _, pai := range titoitsu.Menzen {
-		if _, isYaojiu := YaojiuMap[pai]; isYaojiu {
+		if _, isYaojiu := yaojiuMap[pai]; isYaojiu {
 			isTanyao = false
 		} else {
 			isHonroto = false

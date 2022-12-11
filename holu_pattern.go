@@ -198,28 +198,38 @@ func (shp StandardHoluPattern) HasSpecificKotsuOrKantsu(p pai) bool {
 	return false
 }
 
-func (shp StandardHoluPattern) HasYaojiu() bool {
+func (shp StandardHoluPattern) IsUseOnly(pais []pai) bool {
+	usableMap := map[pai]struct{}{}
+	for _, pai := range pais {
+		usableMap[pai] = struct{}{}
+	}
+
 	for _, mentsu := range shp.FiveBlocks() {
 		for _, pai := range mentsu.pais {
-			if _, isYaojiu := YaojiuMap[pai]; isYaojiu {
-				return true
+			if _, usable := usableMap[pai]; !usable {
+				return false
 			}
 		}
 	}
 
-	return false
+	return true
 }
 
-func (shp StandardHoluPattern) HasChunchan() bool {
+func (shp StandardHoluPattern) IsNotUse(pais []pai) bool {
+	unusableMap := map[pai]struct{}{}
+	for _, pai := range pais {
+		unusableMap[pai] = struct{}{}
+	}
+
 	for _, mentsu := range shp.FiveBlocks() {
 		for _, pai := range mentsu.pais {
-			if _, isYaojiu := YaojiuMap[pai]; !isYaojiu {
-				return true
+			if _, unusable := unusableMap[pai]; unusable {
+				return false
 			}
 		}
 	}
 
-	return false
+	return true
 }
 
 func (shp StandardHoluPattern) HasZi() bool {
