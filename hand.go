@@ -200,8 +200,16 @@ func (hc HupaiCalculater) daisangen() []HandType {
 	return []HandType{大三元}
 }
 
-func (hc HupaiCalculater) sushi() []HandType  { panic("not implemented") }
-func (hc HupaiCalculater) tsuiso() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) sushi() []HandType { panic("not implemented") }
+
+func (hc HupaiCalculater) tsuiso() []HandType {
+	if hc.standard.IsUseOnly([]pai{東, 南, 西, 北, 白, 發, 中}) {
+		return []HandType{字一色}
+	}
+
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) ryuiso() []HandType {
 	if hc.standard.IsUseOnly([]pai{二索, 三索, 四索, 六索, 八索, 發}) {
 		return []HandType{緑一色}
