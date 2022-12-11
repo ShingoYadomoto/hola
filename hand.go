@@ -50,7 +50,13 @@ func (hc HupaiCalculater) tanyao() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) ipeko() []HandType          { panic("not implemented") }
+func (hc HupaiCalculater) ipeko() []HandType {
+	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 1 {
+		return []HandType{一盃口}
+	}
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) sansyokuDoujun() []HandType { panic("not implemented") }
 func (hc HupaiCalculater) ittu() []HandType           { panic("not implemented") }
 func (hc HupaiCalculater) chanta() []HandType         { panic("not implemented") }
@@ -62,16 +68,21 @@ func (hc HupaiCalculater) honro() []HandType          { panic("not implemented")
 func (hc HupaiCalculater) syosangen() []HandType      { panic("not implemented") }
 func (hc HupaiCalculater) honitsu() []HandType        { panic("not implemented") }
 func (hc HupaiCalculater) junchan() []HandType        { panic("not implemented") }
-func (hc HupaiCalculater) ryanpeko() []HandType       { panic("not implemented") }
-func (hc HupaiCalculater) tinitsu() []HandType        { panic("not implemented") }
-func (hc HupaiCalculater) suAnko() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) daisangen() []HandType      { panic("not implemented") }
-func (hc HupaiCalculater) sushi() []HandType          { panic("not implemented") }
-func (hc HupaiCalculater) tsuiso() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) ryuiso() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) chinro() []HandType         { panic("not implemented") }
-func (hc HupaiCalculater) suKantsu() []HandType       { panic("not implemented") }
-func (hc HupaiCalculater) churen() []HandType         { panic("not implemented") }
+func (hc HupaiCalculater) ryanpeko() []HandType {
+	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 2 {
+		return []HandType{二盃口}
+	}
+	return []HandType{}
+}
+func (hc HupaiCalculater) tinitsu() []HandType   { panic("not implemented") }
+func (hc HupaiCalculater) suAnko() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) daisangen() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) sushi() []HandType     { panic("not implemented") }
+func (hc HupaiCalculater) tsuiso() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) ryuiso() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) chinro() []HandType    { panic("not implemented") }
+func (hc HupaiCalculater) suKantsu() []HandType  { panic("not implemented") }
+func (hc HupaiCalculater) churen() []HandType    { panic("not implemented") }
 
 type FullHupaiCalculater struct {
 	fullParrern FullHoluPattern

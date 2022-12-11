@@ -104,11 +104,6 @@ func HoluYiban(holuPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
 		HoluPai = *rongpai
 	}
 
-	fulouMentsu := make([]mentsu, len(holuPattern.FulouPai))
-	for i, Fulou := range holuPattern.FulouPai {
-		fulouMentsu[i] = mentsu{pais: Fulou.pais}
-	}
-
 	var (
 		huleMianzi = []StandardHoluPattern{}
 		paiList    = make([]pai, len(holuPattern.Menzen))
@@ -135,7 +130,7 @@ func HoluYiban(holuPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
 		HoluHoluPattern := StandardHoluPattern{
 			Head:        pai,
 			HoluPai:     HoluPai,
-			FulouMentsu: fulouMentsu,
+			FulouMentsu: holuPattern.FulouMentsuList,
 		}
 		holuPattern.Menzen[pai] -= 2
 		all := HuleMianziAll(holuPattern)
@@ -151,7 +146,7 @@ func HoluYiban(holuPattern HoluPattern, rongpai *pai) []StandardHoluPattern {
 
 // HoluGiduizi は七対子形の処理。
 func HoluGiduizi(HoluPattern HoluPattern, rongpai *pai) *TitoitsuHoluPattern {
-	if len(HoluPattern.FulouPai) > 0 {
+	if len(HoluPattern.FulouMentsuList) > 0 {
 		return nil
 	}
 
@@ -181,7 +176,7 @@ func HoluGiduizi(HoluPattern HoluPattern, rongpai *pai) *TitoitsuHoluPattern {
 
 // HoluGuoshi は国士無双形の処理。
 func HoluGuoshi(HoluPattern HoluPattern, rongpai *pai) *KokushiHoluPattern {
-	if len(HoluPattern.FulouPai) > 0 {
+	if len(HoluPattern.FulouMentsuList) > 0 {
 		return nil
 	}
 
