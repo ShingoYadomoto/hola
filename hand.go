@@ -77,7 +77,19 @@ func (hc HupaiCalculater) toitoi() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) sanAnko() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) sanAnko() []HandType {
+	c := 0
+	for _, m := range hc.standard.Mentsu {
+		if m.TypeIs(mentsuTypeKotsu) {
+			c++
+		}
+	}
+
+	if c == 3 {
+		return []HandType{三暗刻}
+	}
+	return []HandType{}
+}
 
 func (hc HupaiCalculater) sanKantsu() []HandType {
 	c := 0
