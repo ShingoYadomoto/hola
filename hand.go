@@ -114,9 +114,30 @@ func (hc HupaiCalculater) honnro() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) syosangen() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) honnitsu() []HandType  { panic("not implemented") }
-func (hc HupaiCalculater) junchan() []HandType   { panic("not implemented") }
+func (hc HupaiCalculater) syosangen() []HandType {
+	var (
+		sangen = map[pai]struct{}{白: {}, 發: {}, 中: {}}
+		count  = 0
+	)
+
+	for p, _ := range sangen {
+		if hc.standard.HasSpecificKotsuOrKantsu(p) {
+			count++
+			delete(sangen, p)
+		}
+	}
+
+	if count == 2 {
+		for p, _ := range sangen {
+			if hc.standard.Head == p {
+				return []HandType{小三元}
+			}
+		}
+	}
+	return []HandType{}
+}
+func (hc HupaiCalculater) honnitsu() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) junchan() []HandType  { panic("not implemented") }
 
 func (hc HupaiCalculater) ryanpeko() []HandType {
 	if hc.standard.IsMenzen() && hc.standard.SameMentsuVariationCountInMenzen() == 2 {
