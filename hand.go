@@ -94,7 +94,29 @@ func (hc HupaiCalculater) sansyokuDoujun() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) ittu() []HandType   { panic("not implemented") }
+func (hc HupaiCalculater) ittu() []HandType {
+	shunzu := map[paiType]map[string]struct{}{}
+	for _, m := range hc.standard.FiveBlocks() {
+		paiType := m.pais[0].Type
+		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
+			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
+			shunzu[paiType][str] = struct{}{}
+		}
+	}
+
+	for _, m := range shunzu {
+		_, exist1 := m["123"]
+		_, exist2 := m["456"]
+		_, exist3 := m["789"]
+
+		if exist1 && exist2 && exist3 {
+			return []HandType{一気通貫}
+		}
+	}
+
+	return []HandType{}
+}
+
 func (hc HupaiCalculater) chanta() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) toitoi() []HandType {
