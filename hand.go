@@ -1,5 +1,9 @@
 package hola_go
 
+import (
+	"fmt"
+)
+
 type HupaiCalculater struct {
 	standard   StandardHoluPattern
 	zhuangfeng Zhuangfeng
@@ -68,9 +72,30 @@ func (hc HupaiCalculater) peko() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) sansyokuDoujun() []HandType { panic("not implemented") }
-func (hc HupaiCalculater) ittu() []HandType           { panic("not implemented") }
-func (hc HupaiCalculater) chanta() []HandType         { panic("not implemented") }
+func (hc HupaiCalculater) sansyokuDoujun() []HandType {
+	shunzu := map[paiType]map[string]struct{}{}
+	for _, m := range hc.standard.FiveBlocks() {
+		paiType := m.pais[0].Type
+		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
+			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
+			shunzu[paiType][str] = struct{}{}
+		}
+	}
+
+	for str, _ := range shunzu[paiTypeManzu] {
+		_, existPinzu := shunzu[paiTypePinzu][str]
+		_, existSozu := shunzu[paiTypeSozu][str]
+
+		if existPinzu && existSozu {
+			return []HandType{三色同順}
+		}
+	}
+
+	return []HandType{}
+}
+
+func (hc HupaiCalculater) ittu() []HandType   { panic("not implemented") }
+func (hc HupaiCalculater) chanta() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) toitoi() []HandType {
 	c := 0
@@ -114,7 +139,27 @@ func (hc HupaiCalculater) sanKantsu() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) sansyokuDoko() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) sansyokuDoko() []HandType {
+	shunzu := map[paiType]map[string]struct{}{}
+	for _, m := range hc.standard.FiveBlocks() {
+		paiType := m.pais[0].Type
+		if m.TypeIs(mentsuTypeKotsu) && paiType != paiTypeZi {
+			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
+			shunzu[paiType][str] = struct{}{}
+		}
+	}
+
+	for str, _ := range shunzu[paiTypeManzu] {
+		_, existPinzu := shunzu[paiTypePinzu][str]
+		_, existSozu := shunzu[paiTypeSozu][str]
+
+		if existPinzu && existSozu {
+			return []HandType{三色同刻}
+		}
+	}
+
+	return []HandType{}
+}
 
 func (hc HupaiCalculater) honnro() []HandType {
 	if hc.standard.IsUseOnly(YaojiuList) && hc.standard.HasZi() {
