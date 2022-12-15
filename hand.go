@@ -47,7 +47,33 @@ func (hc HupaiCalculater) fengpai() []HandType {
 	return hands
 }
 
-func (hc HupaiCalculater) pinfu() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) pinfu() []HandType {
+	nousePais := map[pai]struct{}{
+		hc.zifeng.Pai():     {},
+		hc.zhuangfeng.Pai(): {},
+		白:                   {},
+		發:                   {},
+		中:                   {},
+	}
+
+	for _, m := range hc.standard.FiveBlocks() {
+		for _, pai := range m.pais {
+			if _, exist := nousePais[pai]; exist {
+				return []HandType{}
+			}
+		}
+
+		if !m.TypeIs(mentsuTypeShuntsu) || !m.TypeIs(mentsuTypehead) {
+			return []HandType{}
+		}
+
+		if !MentsuList(hc.standard.Mentsu).WaitTypeIs(WaitTypeTamen) {
+			return []HandType{}
+		}
+	}
+
+	return []HandType{平和}
+}
 
 func (hc HupaiCalculater) tanyao() []HandType {
 	if hc.standard.IsUseOnly(YaojiuList) {
@@ -499,12 +525,3 @@ func (fhc FullHupaiCalculater) titoitsuAll() AllHands {
 
 	return ret
 }
-
-/*
-平和
-三色同順
-一気通貫
-混全帯幺九
-三色同刻
-純全帯幺九
-*/
