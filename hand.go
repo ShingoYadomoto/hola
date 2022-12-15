@@ -74,7 +74,7 @@ func (hc HupaiCalculater) peko() []HandType {
 
 func (hc HupaiCalculater) sansyokuDoujun() []HandType {
 	shunzu := map[paiType]map[string]struct{}{}
-	for _, m := range hc.standard.FiveBlocks() {
+	for _, m := range append(hc.standard.Mentsu, hc.standard.FulouMentsu.MentsuList()...) {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
@@ -96,7 +96,7 @@ func (hc HupaiCalculater) sansyokuDoujun() []HandType {
 
 func (hc HupaiCalculater) ittu() []HandType {
 	shunzu := map[paiType]map[string]struct{}{}
-	for _, m := range hc.standard.FiveBlocks() {
+	for _, m := range append(hc.standard.Mentsu, hc.standard.FulouMentsu.MentsuList()...) {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
@@ -117,7 +117,33 @@ func (hc HupaiCalculater) ittu() []HandType {
 	return []HandType{}
 }
 
-func (hc HupaiCalculater) chanta() []HandType { panic("not implemented") }
+func (hc HupaiCalculater) chanta() []HandType {
+	existZi := false
+	for _, m := range hc.standard.FiveBlocks() {
+		paiType := m.pais[0].Type
+		if paiType == paiTypeZi {
+			existZi = true
+			break
+		}
+
+		existYaochu := false
+		for _, pai := range m.pais {
+			if pai.IsYaojiu() {
+				existYaochu = true
+				break
+			}
+		}
+
+		if !existYaochu {
+			return []HandType{}
+		}
+	}
+
+	if existZi {
+		return []HandType{混全帯幺九}
+	}
+	return []HandType{純全帯幺九}
+}
 
 func (hc HupaiCalculater) toitoi() []HandType {
 	c := 0
@@ -163,7 +189,7 @@ func (hc HupaiCalculater) sanKantsu() []HandType {
 
 func (hc HupaiCalculater) sansyokuDoko() []HandType {
 	shunzu := map[paiType]map[string]struct{}{}
-	for _, m := range hc.standard.FiveBlocks() {
+	for _, m := range append(hc.standard.Mentsu, hc.standard.FulouMentsu.MentsuList()...) {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeKotsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
@@ -237,8 +263,6 @@ func (hc HupaiCalculater) isshoku() []HandType {
 	}
 	return []HandType{}
 }
-
-func (hc HupaiCalculater) junchan() []HandType { panic("not implemented") }
 
 func (hc HupaiCalculater) suAnko() []HandType {
 	c := 0
@@ -376,7 +400,7 @@ func (fhc FullHupaiCalculater) Hupai() []AllHands {
 		all = append(all, calculater.peko()...)           // 一盃口・二盃口
 		all = append(all, calculater.sansyokuDoujun()...) // 三色同順
 		all = append(all, calculater.ittu()...)           // 一気通貫
-		all = append(all, calculater.chanta()...)         // 混全帯幺九
+		all = append(all, calculater.chanta()...)         // 混全帯幺九・純全帯幺九
 		all = append(all, calculater.toitoi()...)         // 対々和
 		all = append(all, calculater.sanAnko()...)        // 三暗刻
 		all = append(all, calculater.sanKantsu()...)      // 三槓子
@@ -384,7 +408,6 @@ func (fhc FullHupaiCalculater) Hupai() []AllHands {
 		all = append(all, calculater.honnro()...)         // 混老頭
 		all = append(all, calculater.syosangen()...)      // 小三元
 		all = append(all, calculater.isshoku()...)        // 混一色・清一色
-		all = append(all, calculater.junchan()...)        // 純全帯幺九
 		all = append(all, calculater.suAnko()...)         // 四暗刻・四暗刻単騎
 		all = append(all, calculater.daisangen()...)      // 大三元
 		all = append(all, calculater.sushi()...)          // 小四喜・大四喜

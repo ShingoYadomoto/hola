@@ -33,6 +33,15 @@ func (p pai) IsZero() bool {
 	return p.Type == 0 || p.Index == 0
 }
 
+func (p pai) IsYaojiu() bool {
+	for _, y := range YaojiuList {
+		if y == p {
+			return true
+		}
+	}
+	return false
+}
+
 func (p pai) TypeIs(t paiType) bool {
 	return p.Type == t
 }
