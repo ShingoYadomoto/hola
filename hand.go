@@ -63,7 +63,7 @@ func (hc HupaiCalculater) pinfu() []HandType {
 			}
 		}
 
-		if !m.TypeIs(mentsuTypeShuntsu) || !m.TypeIs(mentsuTypehead) {
+		if !m.TypeIs(mentsuTypeShuntsu) && !m.TypeIs(mentsuTypehead) {
 			return []HandType{}
 		}
 
@@ -76,7 +76,7 @@ func (hc HupaiCalculater) pinfu() []HandType {
 }
 
 func (hc HupaiCalculater) tanyao() []HandType {
-	if hc.standard.IsUseOnly(YaojiuList) {
+	if hc.standard.IsUseOnly(ChunchanList) {
 		return []HandType{断幺九}
 	}
 	return []HandType{}

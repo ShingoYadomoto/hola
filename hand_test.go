@@ -125,7 +125,7 @@ func TestFullHupaiCalculater_Hupai(t *testing.T) {
 		want   PossibleAllHands
 	}{
 		{
-			name: "",
+			name: "役なし",
 			fields: fields{
 				fullParrern: FullHoluPattern{
 					Standard: []StandardHoluPattern{
@@ -134,7 +134,32 @@ func TestFullHupaiCalculater_Hupai(t *testing.T) {
 								{pais: []pai{四萬, 五萬, 六萬}, holuPai: &四萬},
 								{pais: []pai{三筒, 四筒, 五筒}},
 								{pais: []pai{五索, 六索, 七索}},
-								{pais: []pai{八索, 八索, 八索}},
+								{pais: []pai{九索, 九索, 九索}},
+							},
+							Head:    二索,
+							HoluPai: 四萬,
+						},
+					},
+					IsTsumo: false,
+				},
+				zhuangfeng: 東場,
+				zifeng:     東家,
+				isTsumo:    false,
+			},
+			want: []AllHands{{}},
+		},
+
+		{
+			name: "メンタンピン",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{四萬, 五萬, 六萬}, holuPai: &四萬},
+								{pais: []pai{三筒, 四筒, 五筒}},
+								{pais: []pai{五索, 六索, 七索}},
+								{pais: []pai{二索, 三索, 四索}},
 							},
 							Head:    二索,
 							HoluPai: 四萬,
@@ -146,32 +171,122 @@ func TestFullHupaiCalculater_Hupai(t *testing.T) {
 				zifeng:     東家,
 				isTsumo:    true,
 			},
-			want: []AllHands{{門前清自摸和}},
+			want: []AllHands{{門前清自摸和, 平和, 断幺九}},
 		},
 
 		{
-			name: "",
+			name: "翻牌場風",
 			fields: fields{
 				fullParrern: FullHoluPattern{
 					Standard: []StandardHoluPattern{
 						{
 							Mentsu: []mentsu{
 								{pais: []pai{七索, 八索, 九索}, holuPai: &七索},
-								{pais: []pai{七索, 八索, 九索}},
+								{pais: []pai{三筒, 四筒, 五筒}},
 								{pais: []pai{七筒, 八筒, 九筒}},
-								{pais: []pai{五筒, 六筒, 七筒}},
+								{pais: []pai{東, 東, 東}},
 							},
 							Head:    四索,
 							HoluPai: 七索,
 						},
 					},
-					IsTsumo: true,
 				},
 				zhuangfeng: 東場,
-				zifeng:     東家,
-				isTsumo:    true,
+				zifeng:     南家,
 			},
-			want: []AllHands{{門前清自摸和, 一盃口}},
+			want: []AllHands{{翻牌場風}},
+		},
+
+		{
+			name: "翻牌自風",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{七索, 八索, 九索}, holuPai: &七索},
+								{pais: []pai{三筒, 四筒, 五筒}},
+								{pais: []pai{七筒, 八筒, 九筒}},
+								{pais: []pai{東, 東, 東}},
+							},
+							Head:    四索,
+							HoluPai: 七索,
+						},
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{{翻牌自風}},
+		},
+
+		{
+			name: "翻牌白",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{七索, 八索, 九索}, holuPai: &七索},
+								{pais: []pai{三筒, 四筒, 五筒}},
+								{pais: []pai{七筒, 八筒, 九筒}},
+								{pais: []pai{白, 白, 白}},
+							},
+							Head:    四索,
+							HoluPai: 七索,
+						},
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{{翻牌白}},
+		},
+
+		{
+			name: "翻牌發",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{七索, 八索, 九索}, holuPai: &七索},
+								{pais: []pai{三筒, 四筒, 五筒}},
+								{pais: []pai{七筒, 八筒, 九筒}},
+								{pais: []pai{發, 發, 發}},
+							},
+							Head:    四索,
+							HoluPai: 七索,
+						},
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{{翻牌發}},
+		},
+
+		{
+			name: "翻牌中",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{七索, 八索, 九索}, holuPai: &七索},
+								{pais: []pai{三筒, 四筒, 五筒}},
+								{pais: []pai{七筒, 八筒, 九筒}},
+								{pais: []pai{中, 中, 中}},
+							},
+							Head:    四索,
+							HoluPai: 七索,
+						},
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{{翻牌中}},
 		},
 	}
 	for _, tt := range tests {
