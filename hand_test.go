@@ -288,6 +288,89 @@ func TestFullHupaiCalculater_Hupai(t *testing.T) {
 			},
 			want: []AllHands{{翻牌中}},
 		},
+
+		{
+			name: "一盃口",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{一萬, 二萬, 三萬}},
+								{pais: []pai{四索, 四索, 四索}},
+								{pais: []pai{一萬, 二萬, 三萬}},
+								{pais: []pai{三索, 三索, 三索}},
+							},
+							Head:    中,
+							HoluPai: 中,
+						},
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{{一盃口}},
+		},
+
+		{
+			name: "七対子・二盃口",
+			fields: fields{
+				fullParrern: FullHoluPattern{
+					Standard: []StandardHoluPattern{
+						{
+							Mentsu: []mentsu{
+								{pais: []pai{一萬, 二萬, 三萬}},
+								{pais: []pai{一萬, 二萬, 三萬}},
+								{pais: []pai{七索, 八索, 九索}},
+								{pais: []pai{七索, 八索, 九索}},
+							},
+							Head:    一萬,
+							HoluPai: 一萬,
+						},
+					},
+					Titoitsu: &TitoitsuHoluPattern{
+						Menzen: []pai{
+							一萬, 二萬, 三萬,
+							七索, 八索, 九索,
+						},
+						HoluPai: 一萬,
+					},
+				},
+				zhuangfeng: 南場,
+				zifeng:     東家,
+			},
+			want: []AllHands{
+				{七対子},
+				{二盃口},
+			},
+		},
+
+		{name: "三色同順"},
+		{name: "一気通貫"},
+		{name: "混全帯幺九"},
+		{name: "七対子"},
+		{name: "対々和"},
+		{name: "三暗刻"},
+		{name: "三槓子"},
+		{name: "三色同刻"},
+		{name: "混老頭"},
+		{name: "小三元"},
+		{name: "混一色"},
+		{name: "純全帯幺九"},
+		{name: "清一色"},
+		{name: "国士無双"},
+		{name: "国士無双十三面"},
+		{name: "四暗刻"},
+		{name: "四暗刻単騎"},
+		{name: "大三元"},
+		{name: "小四喜"},
+		{name: "大四喜"},
+		{name: "字一色"},
+		{name: "緑一色"},
+		{name: "清老頭"},
+		{name: "四槓子"},
+		{name: "九蓮宝燈"},
+		{name: "純正九蓮宝燈"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

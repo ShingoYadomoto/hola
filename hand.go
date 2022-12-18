@@ -156,22 +156,15 @@ func (hc HupaiCalculater) ittu() []HandType {
 func (hc HupaiCalculater) chanta() []HandType {
 	existZi := false
 	for _, m := range hc.standard.FiveBlocks() {
-		paiType := m.pais[0].Type
-		if paiType == paiTypeZi {
-			existZi = true
-			break
-		}
-
-		existYaochu := false
 		for _, pai := range m.pais {
-			if pai.IsYaojiu() {
-				existYaochu = true
-				break
+			if !pai.IsYaojiu() {
+				return []HandType{}
 			}
 		}
 
-		if !existYaochu {
-			return []HandType{}
+		paiType := m.pais[0].Type
+		if paiType == paiTypeZi {
+			existZi = true
 		}
 	}
 
