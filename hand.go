@@ -104,7 +104,12 @@ func (hc HupaiCalculater) sansyokuDoujun() []HandType {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
-			shunzu[paiType][str] = struct{}{}
+			sameTypePaiMap := shunzu[paiType]
+			if sameTypePaiMap == nil {
+				shunzu[paiType] = map[string]struct{}{str: {}}
+			} else {
+				shunzu[paiType][str] = struct{}{}
+			}
 		}
 	}
 
@@ -126,7 +131,12 @@ func (hc HupaiCalculater) ittu() []HandType {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeShuntsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
-			shunzu[paiType][str] = struct{}{}
+			sameTypePaiMap := shunzu[paiType]
+			if sameTypePaiMap == nil {
+				shunzu[paiType] = map[string]struct{}{str: {}}
+			} else {
+				shunzu[paiType][str] = struct{}{}
+			}
 		}
 	}
 
@@ -219,7 +229,12 @@ func (hc HupaiCalculater) sansyokuDoko() []HandType {
 		paiType := m.pais[0].Type
 		if m.TypeIs(mentsuTypeKotsu) && paiType != paiTypeZi {
 			str := fmt.Sprint(m.pais[0].Index, m.pais[1].Index, m.pais[2].Index)
-			shunzu[paiType][str] = struct{}{}
+			sameTypePaiMap := shunzu[paiType]
+			if sameTypePaiMap == nil {
+				shunzu[paiType] = map[string]struct{}{str: {}}
+			} else {
+				shunzu[paiType][str] = struct{}{}
+			}
 		}
 	}
 
@@ -352,7 +367,7 @@ func (hc HupaiCalculater) ryuiso() []HandType {
 }
 
 func (hc HupaiCalculater) chinro() []HandType {
-	if hc.standard.IsNotUse(YaojiuList) && !hc.standard.HasZi() {
+	if hc.standard.IsNotUse(ChunchanList) && !hc.standard.HasZi() {
 		return []HandType{清老頭}
 	}
 	return []HandType{}
@@ -405,14 +420,17 @@ type FullHupaiCalculater struct {
 	isTsumo     bool
 }
 
-func (fhc FullHupaiCalculater) Hupai() []AllHands {
-	ret := []AllHands{}
-	ret = append(ret, fhc.kokushi()) // 国士無双・国士無双十三面
-	if len(ret) > 0 {
-		return ret
+func (fhc FullHupaiCalculater) Hupai() PossibleAllHands {
+	kokushi := fhc.kokushi() // 国士無双・国士無双十三面
+	if len(kokushi) > 0 {
+		return []AllHands{kokushi}
 	}
 
-	ret = append(ret, fhc.titoitsuAll()) // 七対子(複合役も含め)
+	ret := []AllHands{}
+	titoitsu := fhc.titoitsuAll()
+	if len(titoitsu) > 0 {
+		ret = append(ret, titoitsu) // 七対子(複合役も含め)
+	}
 
 	for _, standard := range fhc.fullParrern.Standard {
 		all := AllHands{}
@@ -442,6 +460,8 @@ func (fhc FullHupaiCalculater) Hupai() []AllHands {
 		all = append(all, calculater.chinro()...)         // 清老頭
 		all = append(all, calculater.suKantsu()...)       // 四槓子
 		all = append(all, calculater.churen()...)         // 九蓮宝燈・純正九蓮宝燈
+
+		ret = append(ret, all)
 	}
 
 	return ret

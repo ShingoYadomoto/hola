@@ -85,5 +85,14 @@ var (
 	發 = pai{Type: paiTypeZi, Index: paiIndex6}
 	中 = pai{Type: paiTypeZi, Index: paiIndex7}
 
-	YaojiuList = []pai{一萬, 九萬, 一筒, 九筒, 一索, 九索, 東, 南, 西, 北, 白, 發, 中}
+	YaojiuList = []pai{
+		一萬, 九萬, 一筒, 九筒, 一索, 九索,
+		東, 南, 西, 北, 白, 發, 中,
+	}
+
+	ChunchanList = []pai{
+		二萬, 三萬, 四萬, 五萬, 六萬, 七萬, 八萬,
+		二筒, 三筒, 四筒, 五筒, 六筒, 七筒, 八筒,
+		二索, 三索, 四索, 五索, 六索, 七索, 八索,
+	}
 )
